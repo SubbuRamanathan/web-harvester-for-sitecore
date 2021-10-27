@@ -1,0 +1,38 @@
+{
+	"manifest_version": 2,
+	"version": "1.0",
+	"name": "Sitecore - Scrape & Migrate",
+	"short_name": "Scrape & Migrate",
+	"description": "Tool to extract data from websites and import to Sitecore",
+	"permissions": ["activeTab", "tabs", "storage", "unlimitedStorage"],
+	"icons": {
+		"16": "assets/images/icon16.png",
+		"48": "assets/images/icon48.png",
+		"128": "assets/images/icon128.png"
+	},
+	"options_ui": {
+		"page": "options/options.html",
+		"chrome_style": false
+	},
+	"browser_action": {
+		"default_popup": "options/options.html",
+		"default_title": "Sitecore - Scrape & Migrate (options)",
+		"default_icon": "assets/images/icon38.png"
+	},
+	"devtools_page": "devtools/devtools_page.html",
+	"content_security_policy": "script-src 'self' https://stackpath.bootstrapcdn.com https://cdnjs.cloudflare.com https://ajax.googleapis.com; object-src 'self'",
+	"web_accessible_resources": [
+		"assets/*"
+	],
+	"content_scripts": [
+		{
+			"matches": ["*://*/*"],
+			"js": [
+				"content_scripts/content_script.js"
+			],
+			"css": [
+				"content_scripts/content_script.css"
+			]
+		}
+	]
+}

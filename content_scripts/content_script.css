@@ -1,0 +1,52 @@
+.marked-element {
+    outline: 2px dashed #19a5a2;
+    background-color: #d1fffe;
+}
+.marked-element-temp {
+    outline: 3px solid  #19a5a2;
+    background-color: #d1fffe;
+}
+.marked-element,
+.marked-element-temp {
+    transition: outline 0.05s linear;
+}
+[locator-data-tooltip] {
+    position: absolute;
+    z-index: 1000;
+}
+[locator-data-tooltip]:before {
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    margin-bottom: 5px;
+    margin-left: -10px;
+    padding: 2px 6px 2px 4px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #000;
+    background-color: hsla(0, 0%, 20%, 0.9);
+    color: #fff;
+    content: attr(locator-data-tooltip);
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.2;
+	width: max-content;
+	font-family: 'berlingske_sans_roundmedium',sans-serif;
+	font-style: italic;
+
+}
+[locator-data-tooltip]:after {
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    border-top: 5px solid #000;
+    border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    content: " ";
+    font-size: 0;
+    line-height: 0;
+}

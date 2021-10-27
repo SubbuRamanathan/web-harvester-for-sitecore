@@ -1,0 +1,68 @@
+html,
+body {
+  min-width: 400px;
+  color: #131313;
+  font-family: "Noto Sans JP", sans-serif;
+}
+.header img{
+  padding: 10px;
+  float: left;
+  width: 48px;
+}
+.header h1{
+  float: left;
+  font-size: 2.5em;
+}
+.container{
+  font-weight: 300;
+  width: inherit;
+  padding: 15px;
+}
+.container b{
+  font-weight: 600;
+}
+.container ul{
+  list-style-type: circle;
+  font-family: inherit;
+  font-size: 1.1em;
+}
+.container a{
+  color: #ee3524;
+  text-decoration: none;
+}
+.full-width{
+  width: 100%;
+}
+.note{
+  font-size: 1.4em;
+  text-align: center;
+}
+.abstract{
+  font-weight: 600;
+  font-size: 1.2em;
+  padding: 10px 0px;
+}
+.content{
+  font-size: 1.2em;
+  padding: 10px 0px;
+}
+.danger{
+  color: #ee3524;
+}
+.info{
+  font-size: 0.9em;
+  width: 80%;
+}
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 20px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
