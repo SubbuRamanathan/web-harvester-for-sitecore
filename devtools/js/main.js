@@ -1,24 +1,15 @@
-import { initializeForm, initializeFormValidation } from "./modules/form.js";
-import { importContent } from "./modules/import.js";
+import { initializeImportForm, initializeFormValidation } from "./modules/form.js";
+import { initializeNavigation } from "./modules/navigation.js";
+import { initializeSettings } from "./modules/settings.js";
 import "./modules/navigation.js";
 import "./modules/form.js";
 
 $(document).ready(function () {
-    initializeForm();
+    initializeNavigation();
+    initializeImportForm();
     initializeFormValidation();
+    initializeSettings();
 });
-
-$('#import').click(function (event) {
-    event.stopPropagation();
-    event.preventDefault();
-    updateLocalStorage();
-    importContent();
-});
-
-const updateLocalStorage = function () {
-    localStorage.setItem('sitecoreUrl', $('#sitecoreUrl').val());
-    localStorage.setItem('sitemapUrl', $('#sitemapUrl').val());
-};
 
 
 

@@ -1,7 +1,10 @@
-export { populateMappingSection, validateAndAddMapping, initializeDeleteOptions, getTemplate };
+export { populateMappingSection, validateAndAddMapping, initializeDeleteOptions, addComplexFieldWarning };
 
 import { clearValidations, initializeFormValidation, reinitializeValidations } from "./form.js"
+import { fetchHTML } from "./url.js";
 
+const linkFieldTypes = ['Internal Link', 'General Link', 'General Link with Search', 'link'];
+const warningMessage = 'Ensure that the selected Element/Attribute text format is supported by the Template Field'
 const populateMappingSection = function(){
     $('#mappingTemplateSection').removeClass('d-none');
     if($('#mappingTemplateSection').html().trim() == ''){
@@ -11,7 +14,7 @@ const populateMappingSection = function(){
 }
 
 const appendMappingSection = function(){
-    $('#mappingTemplateSection').append(getTemplate('./views/MappingSection.html'));
+    $('#mappingTemplateSection').append(fetchHTML('./views/MappingSection.html'));
     addMapping($('#mappingTemplateSection .destination-group-map:last'));
     reinitializeValidations();
 }
@@ -28,7 +31,7 @@ const addMappingSection = function(){
 }
 
 const initializeAddMappingSectionLink = function(){
-    $('#addLinkSection').append(getTemplate('./views/AddSectionLink.html'));
+    $('#addLinkSection').append(fetchHTML('./views/AddSectionLink.html'));
     $('[data-toggle="tooltip"]').tooltip();
     $('#addMappingSection').click(function(){
         addMappingSection();
@@ -46,7 +49,7 @@ const validateAndAddMapping = function(mappingSection){
 const addMapping = function(mappingSection){
     initializeMappingValidations(mappingSection, 'last');
 
-    mappingSection.append(getTemplate('./views/Mapping.html'));
+    mappingSection.append(fetchHTML('./views/Mapping.html'));
     initializeMappingValidations(mappingSection, 'first');
     var addedFieldSelector = mappingSection.find('.field-select:last');
     addedFieldSelector.html(mappingSection.find('.field-select:first').html());
@@ -54,12 +57,6 @@ const addMapping = function(mappingSection){
     
     initializeDeleteOptions(mappingSection);
     reinitializeValidations();
-}
-
-const getTemplate = function(templateUrl){
-    var templateHtml;
-    $.ajax({ url: templateUrl, async: false }).done(function (response){ templateHtml = response });
-    return templateHtml;
 }
 
 const initializeMappingValidations = function(mappingSection, selector){
@@ -77,4 +74,19 @@ const initializeDeleteOptions = function(mappingSection){
 
 const isBlankMapping = function(mapping){
     return mapping.find('input').val().trim() == '' && mapping.find('select').val() == null;
+}
+
+const addComplexFieldWarning = function(fieldSelector){
+    var fieldType = $(fieldSelector).find(':selected').data('type');
+    var isLinkFieldType = jQuery.inArray(fieldType, linkFieldTypes) != -1;
+    var domPicker = $(fieldSelector).parents('.destination-field-map').find('.dom-path');
+    if(isLinkFieldType || fieldType == 'Image'){
+        domPicker.addClass('btn-warning');
+        domPicker.attr('title', warningMessage);
+        domPicker.tooltip();
+    }
+    else{
+        domPicker.removeClass('btn-warning');
+        domPicker.attr('title', '');
+    }
 }

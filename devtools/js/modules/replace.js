@@ -1,11 +1,11 @@
-export { initializeReplaceMapping, validateAndAddReplaceMapping, validateAndAddLinkFieldReplaceOptions, updateReplaceOptions };
+export { initializeReplaceMapping, validateAndAddReplaceMapping, validateAndAddComplexFieldReplaceOptions, updateReplaceOptions };
 
 import { closeAllPanels } from "./navigation.js";
-import { getTemplate } from "./template.js"
+import { fetchHTML } from "./url.js";
 
 const linkFieldReplacePattern = '[{"find":"(.*)","replace":"<link linktype=\\"external\\" url=\\"$1\\" target=\\"_blank\\" />"}]';
 const linkFieldTypes = ['Internal Link', 'General Link', 'General Link with Search', 'link']
-const mediaFieldPattern = '<image mediaid="$mediaId" />';
+const mediaFieldPattern = '[{"find":"(.*)","replace":"<image mediaid=\\"$uploadedMediaId\\" />"}]';
 const initializeReplaceMapping = function(target){
     clearReplaceMappingValidations();
     $('#replaceTextContainer').html('');
@@ -26,23 +26,28 @@ const validateAndAddReplaceMapping = function(){
 }
 
 const addReplaceMapping = function(findText, replaceText){
-    $('#replaceTextContainer').append(getTemplate('./views/FindReplace.html'));
+    $('#replaceTextContainer').append(fetchHTML('./views/FindReplace.html'));
     if(findText){
         $('.find-replace-map:last .find-text').val(findText);
         $('.find-replace-map:last .replace-text').val(replaceText);
     }
 }
 
-const validateAndAddLinkFieldReplaceOptions = function(mapping){
+const validateAndAddComplexFieldReplaceOptions = function(mapping){
     var replaceOptions = $(mapping).children('.replace-options');
     var fieldType = $(mapping).find('.field-select :selected').data('type');
     var isLinkFieldType = jQuery.inArray(fieldType, linkFieldTypes) != -1;
     var replaceOptionsText = replaceOptions.val().trim();
+    var isReplaceOptionsEmpty = replaceOptionsText == '';
     if(isLinkFieldType){
-        if(replaceOptionsText == '')
+        if(isReplaceOptionsEmpty || replaceOptionsText == mediaFieldPattern) 
             replaceOptions.val(linkFieldReplacePattern);
     }
-    else if(replaceOptionsText == linkFieldReplacePattern)
+    else if(fieldType == 'Image'){
+        if(isReplaceOptionsEmpty || replaceOptionsText == linkFieldReplacePattern) 
+            replaceOptions.val(mediaFieldPattern);
+    }
+    else if(replaceOptionsText == linkFieldReplacePattern || replaceOptionsText == mediaFieldPattern)
         replaceOptions.val('');
 }
 

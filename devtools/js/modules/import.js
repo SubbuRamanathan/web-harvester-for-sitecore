@@ -19,8 +19,8 @@ const getWebsiteUrls = function(){
     return $('#webpageUrls').val().split(';');
 }
 
-const scrapeAndImport = async (url) => {
-    var document = await fetchHTMLDocument(url);
+const scrapeAndImport = function(url) {
+    var document = fetchHTMLDocument(url);
     $('.destination-group-map').each(function(){
         var requestInfo = composeCreateAPIRequest(url, document, $(this));
         var response = invokeCreateItemAPI(requestInfo.Destination, requestInfo.ItemInfo);

@@ -4,13 +4,13 @@ import { isValidUrl, fetchHTML } from "./url.js";
 import { initializeTree } from "./tree.js";
 import { populateMappingSection } from "./template.js";
 
-const updateAuthenticationStatus = async (sitecoreUrl) => {
+const updateAuthenticationStatus = function(sitecoreUrl) {
     $('.authenticate').removeClass('d-none success unauthorized');
     $('#authenticateLoading').removeClass('d-none');
     $('#authenticateText').text('Checking..');
     $('.authenticate').prop("disabled", true);
-    if(await isValidUrl(sitecoreUrl)){
-        if(await isAuthenticated(sitecoreUrl)){
+    if(isValidUrl(sitecoreUrl)){
+        if(isAuthenticated(sitecoreUrl)){
             $('.authenticate').addClass('success');
             $('#authenticateText').text('Authenticated');
             populateMappingSection();
@@ -28,8 +28,8 @@ const updateAuthenticationStatus = async (sitecoreUrl) => {
     $('#authenticateLoading').addClass('d-none');
 };
 
-const isAuthenticated = async (sitecoreUrl) => {
+const isAuthenticated = function(sitecoreUrl) {
     var sitecoreLaunchpadUrl = `${sitecoreUrl}/shell/sitecore/client/Applications/Launchpad`;
-    var response = await fetchHTML(sitecoreLaunchpadUrl);
+    var response = fetchHTML(sitecoreLaunchpadUrl);
     return response.indexOf('Content Editor') > 0;
 }

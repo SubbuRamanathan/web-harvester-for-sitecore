@@ -1,14 +1,15 @@
 export { invokeReadItemServiceAPI, invokeGetItemAPI, invokeGetChildrenAPI, getAllGrandChildren, getItemId, invokeCreateItemAPI }; 
 
 import { getSitecoreUrl } from "./url.js";
+import { getContentLanguage } from "./settings.js";
 
 const invokeGetItemAPI = function(itemid){
-    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemid}?database=master&language=en&fields=ItemID,ItemName,ItemPath,ItemIcon`;
+    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemid}?database=master&language=${getContentLanguage()}&fields=ItemID,ItemName,ItemPath,ItemIcon`;
     return invokeReadItemServiceAPI(itemServiceAPIUrl);
 }
 
 const invokeGetChildrenAPI = function(itemid){
-    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemid}/children?database=master&language=en&fields=ItemID,ItemName,ItemPath,ItemIcon,TemplateName,Type`;
+    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemid}/children?database=master&language=${getContentLanguage()}&fields=ItemID,ItemName,ItemPath,ItemIcon,TemplateName,Type`;
     return invokeReadItemServiceAPI(itemServiceAPIUrl);
 }
 
@@ -30,7 +31,7 @@ const invokeReadItemServiceAPI = function(itemServiceAPIUrl){
 }
 
 const invokeCreateItemAPI = function(itempath, data){
-    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itempath}?database=master&language=en`;
+    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itempath}?database=master&language=${getContentLanguage()}`;
     return invokeWriteItemServiceAPI(itemServiceAPIUrl, data);
 }
 
@@ -42,7 +43,7 @@ const invokeWriteItemServiceAPI = function(itemServiceAPIUrl, data){
 }
 
 const getItemId = function(itemPath){
-    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/?path=${itemPath}&database=master&language=en&fields=ItemID`;
+    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/?path=${itemPath}&database=master&language=${getContentLanguage()}&fields=ItemID`;
     var itemInfo = invokeReadItemServiceAPI(itemServiceAPIUrl);
     return itemInfo.ItemID;
 }

@@ -1,10 +1,12 @@
 export { composeCreateAPIRequest }; 
 
-import { getPageName } from "./url.js";
+import { importMedia } from "./media.js";
+import { getOrigin, getPageName, isRelativeUrl } from "./url.js";
 
+const mediaReplaceToken = '$uploadedMediaId'
 const composeCreateAPIRequest = function(url, document, mappingSection){
     var itemInfo = getBasicItemInfo(url, mappingSection);
-    itemInfo = addFieldInfo(itemInfo, document);
+    itemInfo = addFieldInfo(url, itemInfo, document, mappingSection);
     var importDetails = { Destination: getDestinationLocation(url), ItemInfo: itemInfo };
     return importDetails;
 }
@@ -26,43 +28,53 @@ const getSanitizedPageName = function(url){
     return getPageName(url).replace(/ |%20/g, '-');
 }
 
-const addFieldInfo = function(itemInfo, document){
-    $('.destination-field-map').each(function(){
+const addFieldInfo = function(url, itemInfo, document, mappingSection){
+    var mediaPath = $(mappingSection).find('.media-selector').val();
+    $(mappingSection).find('.destination-field-map').each(function(){
         var fieldName = $(this).find('.field-select').val();
-        var fieldType = $(this).find('.field-select :selected').data('type');
         if(fieldName && fieldName != ''){
-            var fieldValue = getContent(document, $(this).find('.dom-path').val(), fieldType, getReplaceOptions($(this)));
+            var fieldValue = getContent(url, document, mediaPath, $(this).find('.dom-path').val(), getReplaceOptions($(this)));
             itemInfo[fieldName] = fieldValue;
         }
     });
     return itemInfo;
 }
 
-const getContent = function(document, xpathInfo, fieldType, replaceOptions){
+const getContent = function(url, document, mediaPath, xpathInfo, replaceOptions){
     var contents = []; 
     xpathInfo.split(' || ').forEach(function(xpath){
-        var xpathContent = getXPathContent(document, fieldType, xpath);
-        contents.push(processReplaceOptions(xpathContent, replaceOptions));
+        var xpathContent = getXPathContent(url, document, xpath);
+        contents.push(processReplaceOptions(xpathContent, mediaPath, replaceOptions));
     });
     return contents.join('|');
 }
 
-const getXPathContent = function(document, fieldType, xpath){
+const getXPathContent = function(url, document, xpath){
     var domElement = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext();
-    return domElement.innerHTML;
+    return domElement.innerHTML ?? ensureAbsoluteUrl(domElement.value, url);
 }
 
 const getReplaceOptions = function(fieldMap){
     return fieldMap.find('.replace-options').val().trim();
 }
 
-const processReplaceOptions = function(content, replaceOptionsString){
+const processReplaceOptions = function(originalContent, mediaPath, replaceOptionsString){
+    let processedContent = originalContent;
     if(replaceOptionsString != ''){
         var replaceOptions = JSON.parse(replaceOptionsString);
         replaceOptions.forEach(function(replaceOption){
-            var pattern = new RegExp(replaceOption.find);
-            content = content.replace(pattern, replaceOption.replace);
+            var findPattern = new RegExp(replaceOption.find);
+            var replaceText = replaceOption.replace;
+            processedContent = processedContent.replace(findPattern, replaceText);
+            if(processedContent.indexOf(mediaReplaceToken) != -1)
+                processedContent = processedContent.replace(mediaReplaceToken, importMedia(originalContent, mediaPath));
         });
     }
-    return content;
+    return processedContent;
+}
+
+const ensureAbsoluteUrl = function(currentUrl, websiteUrl){
+    if(isRelativeUrl(currentUrl))
+        return `${getOrigin(websiteUrl)}${currentUrl}`;
+    return currentUrl;    
 }

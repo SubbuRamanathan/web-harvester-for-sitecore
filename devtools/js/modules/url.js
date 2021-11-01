@@ -1,6 +1,6 @@
-export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName }; 
+export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName, isRelativeUrl }; 
 
-const isValidUrl = async (urlString) => {
+const isValidUrl = function(urlString) {
     try {
         new URL(urlString);
     } catch {
@@ -18,28 +18,27 @@ const getSitecoreUrl = function(){
     return $('#sitecoreUrl').val();
 }
 
-const getSitecoreOrigin = function(urlString){
-    return getOrigin(getSitecoreUrl())
+const getSitecoreOrigin = function(){
+    return getOrigin(getSitecoreUrl());
 }
 
-const fetchHTML = async (url) => {
-    try{
-        const response = await fetch(url);
-        return await response.text(); 
-    }
-    catch{}
+const fetchHTML = function(url) {
+    var outputHTML = '';
+    $.ajax({ url: url, async: false }).done(function (response){ outputHTML = response });
+    return outputHTML;
 }
 
-const fetchHTMLDocument = async (url) => {
-    const response = await fetch(url, { redirect: 'manual'});
-    if(response.status == 200){
-        const responseText = await response.text(); 
-        var parser = new DOMParser();
-        return parser.parseFromString(responseText, 'text/html');
-    }
+const fetchHTMLDocument = function(url) {
+    const responseText = fetchHTML(url); 
+    var parser = new DOMParser();
+    return parser.parseFromString(responseText, 'text/html');
 }
 
 const getPageName = function(url){
     var pathname = new URL(url).pathname;
     return pathname == '/' ? 'Home' : pathname.split('/').pop();
+}
+
+const isRelativeUrl = function(url){
+    return url.indexOf('http://') != 0 && url.indexOf('https://') != 0;
 }

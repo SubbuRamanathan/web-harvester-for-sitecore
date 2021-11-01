@@ -1,4 +1,4 @@
-export { initializeForm, initializeFormValidation, reinitializeValidations, clearValidations }
+export { initializeImportForm, initializeFormValidation, reinitializeValidations, clearValidations }
 
 import { sendRunTimeMessage } from "./message.js";
 import { updateAuthenticationStatus } from "./authenticate.js";
@@ -6,14 +6,14 @@ import { updateTemplateFields } from "./fields.js";
 import { getOrigin } from "./url.js";
 import { expandTree } from "./tree.js";
 import { getItemId } from "./itemservice.js";
-import { validateAndAddMapping, initializeDeleteOptions } from "./template.js";
-import { initializeReplaceMapping, validateAndAddReplaceMapping, validateAndAddLinkFieldReplaceOptions, updateReplaceOptions } from "./replace.js";
+import { validateAndAddMapping, initializeDeleteOptions, addComplexFieldWarning } from "./template.js";
+import { initializeReplaceMapping, validateAndAddReplaceMapping, validateAndAddComplexFieldReplaceOptions, updateReplaceOptions } from "./replace.js";
+import { importContent } from "./import.js";
 import { closeAllPanels } from "./navigation.js";
-import { scrapeAndImport } from "./import.js";
 import "./sitemap.js";
 
 var sitecoreUrl;
-const initializeForm = function () {
+const initializeImportForm = function () {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
         var tabUrl = tabs[0]?.url;
         if (tabUrl) {
@@ -29,14 +29,25 @@ const initializeForm = function () {
     sitecoreUrl = localStorage.getItem('sitecoreUrl');
     $('#sitecoreUrl').val(sitecoreUrl);
     $('[data-toggle="tooltip"]').tooltip();
+    $('#import').click(function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        updateLocalStorage();
+        importContent();
+    });
 }
+
+const updateLocalStorage = function () {
+    localStorage.setItem('sitecoreUrl', $('#sitecoreUrl').val());
+    localStorage.setItem('sitemapUrl', $('#sitemapUrl').val());
+};
 
 $('#fetchUrls').click(function(event){
     closeAllPanels();
     $('#sitemapPanel').show();
 });
 
-$('#sitecoreUrl').focusout(function () {
+$(document).on('focusout', '#sitecoreUrl', function () {
     sitecoreUrl = $('#sitecoreUrl').val();
     updateAuthenticationStatus(sitecoreUrl);
 });
@@ -53,7 +64,7 @@ $('.sitecore-tree').on("select_node.jstree", function (event, selected) {
     var associatedPathSelector = $('.tree-icon.active').siblings('.path-selector');
     if(associatedPathSelector.val() != selected.node.data){
         associatedPathSelector.val(selected.node.data);
-        associatedPathSelector.attr('data', selected.node.id)
+        associatedPathSelector.attr('data', selected.node.id);
         updateTemplateFields('.tree-icon.active', selected.node.id);
 
         $('.close-icon').click();
@@ -113,9 +124,6 @@ chrome.runtime.onMessage.addListener(function(message) {
 		case 'pickDOM':
 			processXPaths(message);
 			break;
-		case 'getHTML':
-			scrapeAndImport(message);
-			break;
 	}
 });
 
@@ -131,7 +139,9 @@ const processXPaths = function(message){
 
 $(document).on('change', '.field-select', function(event) {
     validateAndAddMapping($(event.target).parents('.destination-group-map'));
-    validateAndAddLinkFieldReplaceOptions($(event.target).parents('.destination-field-map'));
+    validateAndAddComplexFieldReplaceOptions($(event.target).parents('.destination-field-map'));
+    addComplexFieldWarning($(event.target));
+    closeAllPanels();
 });
 
 $(document).on('focusout', '.find-text, .replace-text', function(event) {
@@ -204,6 +214,14 @@ const initializeFormValidation = function(){
                     regexp: {
                         regexp: '^\/sitecore\/templates\/(.*)$',
                         message: 'Enter valid Template Path (Eg: /sitecore/templates/Home)'
+                    }
+                }
+            },
+            mediaSelector: {
+                validators: {
+                    regexp: {
+                        regexp: '^\/sitecore\/media library\/(.*)$',
+                        message: 'Enter valid Media Library Path (Eg: /sitecore/media library/Images)'
                     }
                 }
             },
