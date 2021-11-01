@@ -1,0 +1,9 @@
+<svg aria-hidden="true" width="20px" height="20px" viewBox="0 0 36 36"
+    xmlns="http://www.w3.org/2000/svg">
+    <path fill="#555"
+        d="M18 9.83a1 1 0 00-1 1v8.72l5.9 4a1 1 0 001.1-1.67l-5-3.39v-7.66a1 1 0 00-1-1z">
+    </path>
+    <path fill="#555"
+        d="M18 2a16.09 16.09 0 00-14 8.26V5.2a1 1 0 00-2 0V14h8.8a1 1 0 000-2H5.35a14 14 0 113.23 16.35 1 1 0 00-1.35 1.48A16 16 0 1018 2z">
+    </path>
+</svg>

@@ -1,0 +1,32 @@
+<form id="importForm" class="row g-3 p-3" data-view="./views/Import.html">
+    <div class="row py-2 w-100 form-group">
+        <div class="col-lg-2"><strong>Webpage URL(s):</strong></div>
+        <div class="col-lg-6">
+            <textarea id="webpageUrls" name="webpageUrls" class="form-control outline-none w-100" rows="2"
+                placeholder="Enter Website URL(s) (semi-colon separated) or click fetch button to pull from Sitemap"></textarea>
+        </div>
+        <div class="col-lg-1">
+            <a id="fetchUrls" href="#sitemapSection">
+                <img src="./images/sitemap.svg" />
+            </a>
+        </div>
+    </div>
+    <div class="row py-2 mb-3 w-100 form-group">
+        <div class="col-lg-2"><strong>Sitecore URL:</strong></div>
+        <div class="col-lg-6"><input id="sitecoreUrl" name="sitecoreUrl" class="form-control"
+                placeholder="Enter Destination Sitecore URL" type="text"></div>
+        <div class="col-lg-2">
+            <button id="authenticate" class="authenticate btn d-none" type="button" disabled>
+                <span id="authenticateLoading" class="spinner-grow spinner-grow-sm float-left" role="status"
+                    aria-hidden="true"></span>
+                <span id="authenticateText" class="float-left d-block">Checking...</span>
+            </button>
+        </div>
+    </div>
+    <div id="mappingTemplateSection" class="d-none w-100 pb-3">
+    </div>
+    <div id="addLinkSection" class="w-100">
+    </div>
+    <button id="save" class="btn btn-info my-2 mr-3" type="submit">Save</button>
+    <button id="import" class="btn btn-info my-2" type="submit">Import</button>
+</form>
