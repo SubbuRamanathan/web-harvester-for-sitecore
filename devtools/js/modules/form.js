@@ -8,7 +8,7 @@ import { expandTree } from "./tree.js";
 import { getItemId } from "./itemservice.js";
 import { validateAndAddMapping, initializeDeleteOptions, addComplexFieldWarning } from "./template.js";
 import { initializeReplaceMapping, validateAndAddReplaceMapping, validateAndAddComplexFieldReplaceOptions, updateReplaceOptions } from "./replace.js";
-import { importContent } from "./import.js";
+import { abortImport, clearAllMappingSections, validateAndImportContent } from "./import.js";
 import { closeAllPanels } from "./navigation.js";
 import "./sitemap.js";
 
@@ -30,10 +30,17 @@ const initializeImportForm = function () {
     $('#sitecoreUrl').val(sitecoreUrl);
     $('[data-toggle="tooltip"]').tooltip();
     $('#import').click(function (event) {
-        event.stopPropagation();
-        event.preventDefault();
+        preventReload(event);
         updateLocalStorage();
-        importContent();
+        validateAndImportContent();
+    });
+    $('#resetImport').click(function(event){
+        preventReload(event);
+        clearAllMappingSections();
+    });
+    $('#abortImport').click(function(event){
+        preventReload(event);
+        abortImport();
     });
 }
 
@@ -42,9 +49,12 @@ const updateLocalStorage = function () {
     localStorage.setItem('sitemapUrl', $('#sitemapUrl').val());
 };
 
-$('#fetchUrls').click(function(event){
-    closeAllPanels();
-    $('#sitemapPanel').show();
+$(document).on('click', '#importForm a[href^="#"]', function(event){
+    var panelId = $(event.currentTarget).attr('href');
+    if(panelId != '#'){
+        closeAllPanels();
+        $(panelId).show();
+    }
 });
 
 $(document).on('focusout', '#sitecoreUrl', function () {
@@ -77,14 +87,10 @@ $(document).on('focusout', '.template-selector', function(e){
     updateTemplateFields(e.currentTarget, templateId);
 });
 
-$(document).on('click', '[href$="PathSection"]', function (e) {
-    e.stopPropagation();
-    e.preventDefault();
+$(document).on('click', '[href$="PathPanel"]', function (e) {
+    preventReload(e);
     
-    closeAllPanels();
     $(e.currentTarget).toggleClass('active');
-    $(e.currentTarget.attributes['href'].value).show();
-
     if($(e.currentTarget).hasClass('active'))
         expandTree(e.currentTarget);
 });
@@ -157,15 +163,12 @@ $(document).on('click', '.delete-mapping', function(event){
 });
 
 $(document).on('click', '.find-replace', function(event){
-    closeAllPanels();
     initializeReplaceMapping(event.currentTarget);
-    $('#replaceTextPanel').show();
     $(event.currentTarget).addClass('active');
 });
 
 $(document).on('click', '#confirmReplace', function(event){
-    event.stopPropagation();
-    event.preventDefault();
+    preventReload(event);
     updateReplaceOptions();
 });
 
@@ -224,20 +227,6 @@ const initializeFormValidation = function(){
                         message: 'Enter valid Media Library Path (Eg: /sitecore/media library/Images)'
                     }
                 }
-            },
-            domSelector: {
-                validators: {
-                    notEmpty: {
-                        message: 'DOM Selection is required'
-                    }
-                }
-            },
-            fieldSelector: {
-                validators: {
-                    notEmpty: {
-                        message: 'Field Selection is required'
-                    }
-                }
             }
         }
     });
@@ -251,4 +240,9 @@ const reinitializeValidations = function(){
 const clearValidations = function(){
     $('#importForm').data('bootstrapValidator').destroy();
     $('#importForm').data('bootstrapValidator', null);
+}
+
+const preventReload = function(event){
+    event.stopPropagation();
+    event.preventDefault();
 }

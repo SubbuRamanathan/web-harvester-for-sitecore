@@ -7,7 +7,7 @@ import { getSitecoreUrl } from "./url.js";
 const templateFieldTemplateName = 'template field';
 const standardTemplateId = '{1930BBEB-7805-471A-A3BE-4858AC7CF696}';
 const updateTemplateFields = function(associatedElement, templateId){
-    if($(associatedElement).attr('href') == '#templatePathSection'){
+    if($(associatedElement).attr('href') == '#templatePathPanel'){
         var templateFieldOptions = [];
         var templateFields = getAllTemplateFields(templateId);
         templateFields.forEach(function (field) { templateFieldOptions.push(`<option value="${field.ItemName}" data-type="${field.Type}">${field.ItemName}</option>`); });

@@ -1,4 +1,4 @@
-export { composeCreateAPIRequest }; 
+export { composeCreateAPIRequest, getSanitizedPageName }; 
 
 import { importMedia } from "./media.js";
 import { getOrigin, getPageName, isRelativeUrl } from "./url.js";
@@ -7,12 +7,12 @@ const mediaReplaceToken = '$uploadedMediaId'
 const composeCreateAPIRequest = function(url, document, mappingSection){
     var itemInfo = getBasicItemInfo(url, mappingSection);
     itemInfo = addFieldInfo(url, itemInfo, document, mappingSection);
-    var importDetails = { Destination: getDestinationLocation(url), ItemInfo: itemInfo };
+    var importDetails = { Destination: getDestinationLocation(url, mappingSection), ItemInfo: itemInfo };
     return importDetails;
 }
 
-const getDestinationLocation = function(url){
-    var destinationItemPath = $('.target-selector').val().replace('$name', getSanitizedPageName(url));
+const getDestinationLocation = function(url, mappingSection){
+    var destinationItemPath = mappingSection.contentPath.replace('$name', getSanitizedPageName(url));
     destinationItemPath = destinationItemPath.substring(1);
     return encodeURIComponent(destinationItemPath);
 }
@@ -20,7 +20,7 @@ const getDestinationLocation = function(url){
 const getBasicItemInfo = function(url, mappingSection){
     return {
         ItemName: getSanitizedPageName(url),
-        TemplateID: mappingSection.find('.template-selector').attr('data')
+        TemplateID: mappingSection.templateId
     }
 }
 
@@ -29,11 +29,11 @@ const getSanitizedPageName = function(url){
 }
 
 const addFieldInfo = function(url, itemInfo, document, mappingSection){
-    var mediaPath = $(mappingSection).find('.media-selector').val();
-    $(mappingSection).find('.destination-field-map').each(function(){
-        var fieldName = $(this).find('.field-select').val();
+    var mediaPath = mappingSection.mediaPath;
+    mappingSection.mappings.forEach(function(mapping){
+        var fieldName = mapping.field;
         if(fieldName && fieldName != ''){
-            var fieldValue = getContent(url, document, mediaPath, $(this).find('.dom-path').val(), getReplaceOptions($(this)));
+            var fieldValue = getContent(url, document, mediaPath, mapping.domPath, mapping.replaceOptions);
             itemInfo[fieldName] = fieldValue;
         }
     });
@@ -52,10 +52,6 @@ const getContent = function(url, document, mediaPath, xpathInfo, replaceOptions)
 const getXPathContent = function(url, document, xpath){
     var domElement = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext();
     return domElement.innerHTML ?? ensureAbsoluteUrl(domElement.value, url);
-}
-
-const getReplaceOptions = function(fieldMap){
-    return fieldMap.find('.replace-options').val().trim();
 }
 
 const processReplaceOptions = function(originalContent, mediaPath, replaceOptionsString){

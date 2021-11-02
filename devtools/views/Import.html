@@ -1,4 +1,4 @@
-<form id="importForm" class="row g-3 p-3" data-view="./views/Import.html">
+<form id="importForm" class="row g-3 p-3" data-view="./views/Import.html" data-status="">
     <div class="row py-2 w-100 form-group">
         <div class="col-lg-2"><strong>Webpage URL(s):</strong></div>
         <div class="col-lg-6">
@@ -6,7 +6,7 @@
                 placeholder="Enter Website URL(s) (semi-colon separated) or click fetch button to pull from Sitemap"></textarea>
         </div>
         <div class="col-lg-1">
-            <a id="fetchUrls" href="#sitemapSection">
+            <a id="fetchUrls" href="#sitemapPanel">
                 <img src="./images/sitemap.svg" />
             </a>
         </div>
@@ -29,4 +29,12 @@
     </div>
     <button id="save" class="btn btn-info my-2 mr-3" type="submit">Save</button>
     <button id="import" class="btn btn-info my-2" type="submit">Import</button>
+    <span class="pt-3 px-3 d-none" id="saveSuccessMessage">Saved Successfully!</span>
+    <span class="pt-3 px-3 d-none" id="importSuccessMessage">Imported Successfully!</span>
+    <div class="mt-3 d-none" id="importProgressMessage"><span
+            class="spinner-border ml-3 mr-2 text-base12 loading-spinner"></span>Importing.. Please wait!</div>
+    <span class="pt-3 px-3 d-none" id="importFailureMessage">Import completed with errors</span>
+    <a class="pt-3 px-3 link-info d-none" id="importDetails" href="#importLogPanel">View Log</a>
+    <a class="pt-3 link-danger d-none" id="abortImport" href="">Abort</a>
+    <a class="pt-3 link-info d-none" id="resetImport" href="">Reset</a>
 </form>

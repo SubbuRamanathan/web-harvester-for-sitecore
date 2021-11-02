@@ -1,4 +1,6 @@
-export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName, isRelativeUrl }; 
+export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName, isRelativeUrl, getHorizonAppUrl, extractItemId, getChromeExtensionOrigin }; 
+
+const guidPattern = '(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}';
 
 const isValidUrl = function(urlString) {
     try {
@@ -41,4 +43,25 @@ const getPageName = function(url){
 
 const isRelativeUrl = function(url){
     return url.indexOf('http://') != 0 && url.indexOf('https://') != 0;
+}
+
+const getHorizonAppUrl = function() {
+    const launchPadUrl = `${getSitecoreUrl()}/sitecore/shell/sitecore/client/Applications/Launchpad`;
+    var htmlDocument = fetchHTMLDocument(launchPadUrl);
+    if(htmlDocument){
+        var horizonTile = htmlDocument.querySelectorAll('a[title="Horizon"]');
+        if(horizonTile.length > 0)
+            return horizonTile[0].href;
+    }
+    return '';
+}
+
+const extractItemId = function(response){
+    var regexMatches = response?.match(new RegExp(guidPattern, 'ig'));
+    if(regexMatches)
+        return regexMatches[0];
+}
+
+const getChromeExtensionOrigin = function(){
+    return new URL(document.location.href).origin;
 }

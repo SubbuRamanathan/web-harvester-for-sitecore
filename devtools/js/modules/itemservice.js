@@ -1,7 +1,7 @@
 export { invokeReadItemServiceAPI, invokeGetItemAPI, invokeGetChildrenAPI, getAllGrandChildren, getItemId, invokeCreateItemAPI }; 
 
-import { getSitecoreUrl } from "./url.js";
 import { getContentLanguage } from "./settings.js";
+import { extractItemId, getSitecoreUrl } from "./url.js";
 
 const invokeGetItemAPI = function(itemid){
     var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemid}?database=master&language=${getContentLanguage()}&fields=ItemID,ItemName,ItemPath,ItemIcon`;
@@ -32,7 +32,11 @@ const invokeReadItemServiceAPI = function(itemServiceAPIUrl){
 
 const invokeCreateItemAPI = function(itempath, data){
     var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itempath}?database=master&language=${getContentLanguage()}`;
-    return invokeWriteItemServiceAPI(itemServiceAPIUrl, data);
+    var response = invokeWriteItemServiceAPI(itemServiceAPIUrl, data);
+    let createdItemId = extractItemId(response.getResponseHeader('location'));
+    if(!createdItemId)
+        throw 'Unable to create item in Sitecore';
+    return createdItemId;
 }
 
 const invokeWriteItemServiceAPI = function(itemServiceAPIUrl, data){

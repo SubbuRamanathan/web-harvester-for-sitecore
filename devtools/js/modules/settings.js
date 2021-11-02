@@ -1,11 +1,22 @@
-export { initializeSettings, updateSettings, getCredentials, initializeSettingsForm, getContentLanguage }; 
+export { initializeSettings, getSettings, getCredentials, updateSettings, initializeSettingsForm, getContentLanguage }; 
 
 let settings;
 const settingsKey = 'settings';
 const initializeSettings = function() {
     chrome.storage.sync.get(settingsKey, async (storage) => {
         settings = storage.settings;
+        if(!settings){
+            settings = new Object();
+            settings.overwriteBehavior = 'updateItem';
+            settings.contentLanguage = 'en';
+            settings.username = 'admin';
+            settings.password = 'b';
+        }
     });
+}
+
+const getSettings = function(){
+    return settings;
 }
 
 const getCredentials = function(){
@@ -39,7 +50,7 @@ const updateSettings = function(event){
         settings[this.id] = $(this).val();
     });
     settings.overwriteBehavior = $('#overwriteBehavior input:radio:checked').attr('id');
-    chrome.storage.sync.set({[settingsKey]:settings});
+    chrome.storage.local.set({[settingsKey]:settings});
     $("#settingsForm #saveSuccessMessage").show().delay(2400).fadeOut(300);
 }
 

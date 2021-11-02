@@ -10,9 +10,3 @@ $(document).ready(function () {
     initializeFormValidation();
     initializeSettings();
 });
-
-
-
-
-
-

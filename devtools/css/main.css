@@ -560,3 +560,64 @@ select:invalid {
 .collapse{
   display: none;
 }
+
+.loading-spinner{
+  font-size: 0.8em;
+  height: 1.75em;
+  width: 1.75em;
+}
+
+.link-info{
+  color: var(--spec04);
+  text-decoration: underline;
+}
+
+.link-danger{
+  color: var(--sitecore-red);
+  text-decoration: underline;
+}
+
+#importForm.importing #importDetails,
+#importForm.success #importDetails,
+#importForm.failed #importDetails {
+  display: block !important;
+}
+
+#importForm.importing #importProgressMessage {
+  display: block !important;
+}
+
+#importForm.importing #abortImport {
+  display: block !important;
+}
+
+#importForm.success #resetImport,
+#importForm.failed #resetImport {
+  display: block !important;
+}
+
+#importForm.success #importSuccessMessage {
+  display: block !important;
+}
+
+#importForm.success #importDetails {
+  color: var(--sitecore-green) !important;
+}
+
+#importForm.failed #importFailureMessage {
+  display: block !important;
+}
+
+#importForm.failed #importDetails {
+  color: var(--sitecore-red) !important;
+}
+
+#importLogContainer a{
+  margin-left: 0.5rem;
+  color: var(--sitecore-green);
+  white-space: nowrap;
+}
+
+#importLogContainer .error{
+  color: var(--sitecore-red);
+}
