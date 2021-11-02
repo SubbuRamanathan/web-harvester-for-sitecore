@@ -2,20 +2,15 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="/devtools/css/vendor/bootstrap.min.css">
 	<link rel="stylesheet" href="/devtools/css/main.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-		crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-		crossorigin="anonymous"></script>
+	<script src="/devtools/js/vendor/jquery.min.js"></script>
+	<script src="/devtools/js/vendor/popper.min.js"></script>
+	<script src="/devtools/js/vendor/bootstrap.min.js"></script>
 	<script src="js/main.js" type="module"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+	<script src="/devtools/js/vendor/bootstrapValidator.js"></script>
+	<link rel="stylesheet" href="/devtools/css/vendor/jstree/style.min.css" />
+	<script src="/devtools/js/vendor/jstree.min.js"></script>
 </head>
 
 <body>
@@ -87,7 +82,7 @@
 				</form>
 			</div>
 		</div>
-		<div id="itemPathSection" class="config-section collapse">
+		<div id="itemPathPanel" class="config-section collapse">
 			<a class="close-icon">
 				<img src="./images/cross.svg" />
 			</a>
@@ -95,7 +90,7 @@
 				<div class="sitecore-tree" data-rootnode="0de95ae4-41ab-4d01-9eb0-67441b7c2450"></div>
 			</div>
 		</div>
-		<div id="templatePathSection" class="config-section collapse">
+		<div id="templatePathPanel" class="config-section collapse">
 			<a class="close-icon">
 				<img src="./images/cross.svg" />
 			</a>
@@ -103,7 +98,7 @@
 				<div class="sitecore-tree" data-rootnode="3c1715fe-6a13-4fcf-845f-de308ba9741d"></div>
 			</div>
 		</div>
-		<div id="mediaPathSection" class="config-section collapse">
+		<div id="mediaPathPanel" class="config-section collapse">
 			<a class="close-icon">
 				<img src="./images/cross.svg" />
 			</a>
@@ -120,6 +115,13 @@
 				</div>
 				<button id="confirmReplace" class="confirm-replace btn btn-info m-4" type="submit">Confirm</button>
 			</form>
+		</div>
+		<div id="importLogPanel" class="config-section collapse width h-100">
+			<a class="close-icon">
+				<img src="./images/cross.svg" />
+			</a>
+			<div id="importLogContainer" class="overflow-auto h-100 p-4">
+			</div>
 		</div>
 	</div>
 </body>
