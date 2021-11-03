@@ -1,4 +1,4 @@
-export { invokeReadItemServiceAPI, invokeGetItemAPI, invokeGetChildrenAPI, getAllGrandChildren, getItemId, invokeCreateItemAPI }; 
+export { invokeReadItemServiceAPI, invokeGetItemAPI, invokeGetChildrenAPI, getAllGrandChildren, getItemId, invokeCreateItemAPI, invokeEditItemAPI }; 
 
 import { getContentLanguage } from "./settings.js";
 import { extractItemId, getSitecoreUrl } from "./url.js";
@@ -30,18 +30,26 @@ const invokeReadItemServiceAPI = function(itemServiceAPIUrl){
     return itemInfo;
 }
 
-const invokeCreateItemAPI = function(itempath, data){
-    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itempath}?database=master&language=${getContentLanguage()}`;
-    var response = invokeWriteItemServiceAPI(itemServiceAPIUrl, data);
+const invokeCreateItemAPI = function(parentItemPath, data){
+    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${parentItemPath}?database=master&language=${getContentLanguage()}`;
+    var response = invokeWriteItemServiceAPI(itemServiceAPIUrl,'POST', data);
     let createdItemId = extractItemId(response.getResponseHeader('location'));
     if(!createdItemId)
-        throw 'Unable to create item in Sitecore';
+        throw `Unable to create item in Sitecore (${getErrorMessage()})`;
     return createdItemId;
 }
 
-const invokeWriteItemServiceAPI = function(itemServiceAPIUrl, data){
+const invokeEditItemAPI = function(itemId, data){
+    var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemId}?database=master&language=${getContentLanguage()}`;
+    var response = invokeWriteItemServiceAPI(itemServiceAPIUrl, 'PATCH', data);
+    if(response.status != 204)
+        throw `Unable to update item in Sitecore (${getErrorMessage()})`;
+    return itemId;
+}
+
+const invokeWriteItemServiceAPI = function(itemServiceAPIUrl, method, data){
     var formattedData = JSON.stringify(data);
-    var response = $.ajax({ url: itemServiceAPIUrl, type: 'POST', contentType: "application/json", data: formattedData, async: false })
+    var response = $.ajax({ url: itemServiceAPIUrl, type: method, contentType: "application/json", data: formattedData, async: false })
         .done(function (response){ return response });
     return response;
 }
@@ -49,5 +57,9 @@ const invokeWriteItemServiceAPI = function(itemServiceAPIUrl, data){
 const getItemId = function(itemPath){
     var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/?path=${itemPath}&database=master&language=${getContentLanguage()}&fields=ItemID`;
     var itemInfo = invokeReadItemServiceAPI(itemServiceAPIUrl);
-    return itemInfo.ItemID;
+    return itemInfo?.ItemID;
+}
+
+const getErrorMessage = function(response){
+    return `${response.status} - ${response.responseJSON?.Message ?? response.responseText}`;
 }

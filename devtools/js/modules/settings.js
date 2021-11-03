@@ -1,9 +1,9 @@
-export { initializeSettings, getSettings, getCredentials, updateSettings, initializeSettingsForm, getContentLanguage }; 
+export { initializeSettings, getSettings, getCredentials, isOverwriteAllowed, updateSettings, initializeSettingsForm, getContentLanguage }; 
 
 let settings;
 const settingsKey = 'settings';
 const initializeSettings = function() {
-    chrome.storage.sync.get(settingsKey, async (storage) => {
+    chrome.storage.local.get(settingsKey, async (storage) => {
         settings = storage.settings;
         if(!settings){
             settings = new Object();
@@ -11,6 +11,8 @@ const initializeSettings = function() {
             settings.contentLanguage = 'en';
             settings.username = 'admin';
             settings.password = 'b';
+            settings.itemNameFindText = '( |%20)';
+            settings.itemNameReplaceText = '-';
         }
     });
 }
@@ -26,6 +28,10 @@ const getCredentials = function(){
 
 const getContentLanguage = function(){
     return settings.contentLanguage;
+}
+
+const isOverwriteAllowed = function(){
+    return settings.overwriteBehavior == 'updateItem';
 }
 
 const initializeSettingsForm = function(){
@@ -45,7 +51,7 @@ const initializeSettingsForm = function(){
 const updateSettings = function(event){
     event.preventDefault();
     event.stopPropagation();
-    settings = {};
+    settings = new Object();
     $(`#settingsForm input`).each(function(){
         settings[this.id] = $(this).val();
     });

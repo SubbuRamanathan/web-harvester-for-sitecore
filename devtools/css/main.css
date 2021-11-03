@@ -612,6 +612,10 @@ select:invalid {
   color: var(--sitecore-red) !important;
 }
 
+#importLogContainer{
+  overflow-wrap: break-word;
+}
+
 #importLogContainer a{
   margin-left: 0.5rem;
   color: var(--sitecore-green);
@@ -620,4 +624,8 @@ select:invalid {
 
 #importLogContainer .error{
   color: var(--sitecore-red);
+}
+
+.d-contents{
+  display: contents;
 }

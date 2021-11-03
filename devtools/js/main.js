@@ -4,9 +4,10 @@ import { initializeSettings } from "./modules/settings.js";
 import "./modules/navigation.js";
 import "./modules/form.js";
 
+initializeSettings();
+
 $(document).ready(function () {
     initializeNavigation();
     initializeImportForm();
     initializeFormValidation();
-    initializeSettings();
 });

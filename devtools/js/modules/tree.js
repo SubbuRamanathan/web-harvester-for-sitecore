@@ -56,7 +56,7 @@ const expandTree = function(target){
         var nodesToExpand = [];
         var currentItemPath = '/sitecore';
         itemPath.split('/').forEach(function(itemName) {
-            if(itemName.trim() != '' && itemName.toLowerCase() != 'sitecore'){
+            if(itemName.trim() != '' && itemName.trim() != '$name' && itemName.toLowerCase() != 'sitecore'){
                 currentItemPath += `/${itemName}`;
                 nodesToExpand.push(getItemId(currentItemPath));
             }

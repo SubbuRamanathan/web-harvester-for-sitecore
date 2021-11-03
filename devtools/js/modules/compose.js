@@ -1,31 +1,39 @@
 export { composeCreateAPIRequest, getSanitizedPageName }; 
 
 import { importMedia } from "./media.js";
+import { getSettings } from "./settings.js";
 import { getOrigin, getPageName, isRelativeUrl } from "./url.js";
 
 const mediaReplaceToken = '$uploadedMediaId'
 const composeCreateAPIRequest = function(url, document, mappingSection){
-    var itemInfo = getBasicItemInfo(url, mappingSection);
+    let itemName = getSanitizedPageName(url);
+    let itemInfo = getBasicItemInfo(itemName, mappingSection);
     itemInfo = addFieldInfo(url, itemInfo, document, mappingSection);
-    var importDetails = { Destination: getDestinationLocation(url, mappingSection), ItemInfo: itemInfo };
+    let importDetails = { ParentPath: getParentPath(mappingSection), ItemPath: getItemPath(itemName, mappingSection), ItemInfo: itemInfo };
     return importDetails;
 }
 
-const getDestinationLocation = function(url, mappingSection){
-    var destinationItemPath = mappingSection.contentPath.replace('$name', getSanitizedPageName(url));
-    destinationItemPath = destinationItemPath.substring(1);
-    return encodeURIComponent(destinationItemPath);
+const getParentPath = function(mappingSection){
+    return mappingSection.contentPath.replace('$name', '');
 }
 
-const getBasicItemInfo = function(url, mappingSection){
+const getItemPath = function(itemName, mappingSection){
+    let itemPath = mappingSection.contentPath.replace('$name', itemName);
+    itemPath = itemPath.substring(1);
+    return encodeURIComponent(itemPath);
+}
+
+const getBasicItemInfo = function(itemName, mappingSection){
     return {
-        ItemName: getSanitizedPageName(url),
+        ItemName: itemName,
         TemplateID: mappingSection.templateId
     }
 }
 
 const getSanitizedPageName = function(url){
-    return getPageName(url).replace(/ |%20/g, '-');
+    let settings = getSettings();
+    let findRegexPattern = new RegExp(settings.itemNameFindText);
+    return getPageName(url).replace(findRegexPattern, settings.itemNameReplaceText);
 }
 
 const addFieldInfo = function(url, itemInfo, document, mappingSection){

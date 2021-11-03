@@ -1,9 +1,10 @@
 export { validateAndImportContent, clearAllMappingSections, abortImport, isImportAborted }; 
 
 import { getImportDetails } from "./save.js";
-import { composeCreateAPIRequest, getSanitizedPageName } from "./compose.js";
-import { invokeCreateItemAPI } from "./itemservice.js";
-import { addCreateItemSuccessLog, addErrorLog, addImportSuccessLog, addInfoLog, clearLogs, updateImportStatus } from "./log.js";
+import { composeCreateAPIRequest } from "./compose.js";
+import { getItemId, invokeCreateItemAPI, invokeEditItemAPI } from "./itemservice.js";
+import { addCreateItemSuccessLog, addEditItemSuccessLog, addErrorLog, addImportSkippedLog, addImportSuccessLog, addInfoLog, clearLogs, updateImportStatus } from "./log.js";
+import { isOverwriteAllowed } from "./settings.js";
 
 let importDetails;
 let urlsToImport;
@@ -55,8 +56,7 @@ const scrapeAndImport = function(url, responseText){
             var document = parser.parseFromString(responseText, 'text/html');
             importDetails.mappingSections.forEach(function(mappingSection){
                 var requestInfo = composeCreateAPIRequest(url, document, mappingSection);
-                var createdItemId = invokeCreateItemAPI(requestInfo.Destination, requestInfo.ItemInfo);
-                addCreateItemSuccessLog(getSanitizedPageName(url), createdItemId);
+                createOrUpdateItem(requestInfo);
             });
             addImportSuccessLog(url);
         }
@@ -64,6 +64,22 @@ const scrapeAndImport = function(url, responseText){
             addErrorLog(error, url);
         }
         importedUrlCount++;
+    }
+}
+
+const createOrUpdateItem = function(requestInfo){
+    let itemId = getItemId(requestInfo.ItemPath)
+    if(!itemId){
+        var createdItemId = invokeCreateItemAPI(requestInfo.ParentPath, requestInfo.ItemInfo);
+        addCreateItemSuccessLog(requestInfo.ItemInfo.ItemName, createdItemId);
+    }
+    else{
+        if(isOverwriteAllowed()){
+            invokeEditItemAPI(itemId, requestInfo.ItemInfo);
+            addEditItemSuccessLog(requestInfo.ItemInfo.ItemName, itemId);
+        }
+        else
+            addImportSkippedLog(decodeURIComponent(requestInfo.ItemPath), itemId);
     }
 }
 

@@ -3,10 +3,10 @@
         <img src="/devtools/images/cross.svg">
     </a>
     <div class="row py-2 form-group">
-        <div class="col-lg-2 pr-0"><strong>Target Path:</strong></div>
+        <div class="col-lg-2 pr-0"><strong>Item Path:</strong></div>
         <div class="col-lg-8">
             <input class="path-selector target-selector outline-none form-control pr-5" name="pathSelector"
-                placeholder="Specify Parent Path(if new item) or Item Path(if existing) to create/update" type="text">
+                placeholder="Specify the Item Path to create/update" type="text">
             <a href="#itemPathPanel" class="tree-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                     <path fill="none" d="M0 0H24V24H0z" />
@@ -16,12 +16,15 @@
                 </svg>
             </a>
         </div>
+        <span class="d-contents">
+            <img src="./images/info.svg" data-toggle="tooltip" title="Use $name for current page name. Replace options for Item Name can be configured in Settings tab." />	
+        </span>
     </div>
     <div class="row py-2 form-group">
         <div class="col-lg-2 pr-0"><strong>Item Template:</strong></div>
         <div class="col-lg-8">
             <input class="path-selector template-selector outline-none form-control pr-5"
-                placeholder="Specify the Destination Item's Template" name="templateSelector" type="text">
+                placeholder="Specify the Target Item's Template" name="templateSelector" type="text">
             <a href="#templatePathPanel" class="tree-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                     <path fill="none" d="M0 0H24V24H0z" />

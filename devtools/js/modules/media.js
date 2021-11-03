@@ -2,7 +2,7 @@ export { importMedia };
 
 import { getSanitizedPageName } from "./compose.js";
 import { isImportAborted } from "./import.js";
-import { addCreateItemSuccessLog, addErrorLog } from "./log.js";
+import { addMediaItemImportedLog, addErrorLog } from "./log.js";
 import { getCredentials } from "./settings.js";
 import { extractItemId, getSitecoreOrigin } from "./url.js";
 
@@ -16,7 +16,7 @@ const importMedia = function(mediaUrl, mediaPath){
 
             let mediaImportApiUrl = `${getSitecoreOrigin()}${speWebApiPath}?mediaUrl=${encodeURIComponent(mediaUrl)}&mediaPath=${mediaPath ?? ''}`;
             let createdMediaItemId = invokeSPEWebApi(mediaImportApiUrl);
-            addCreateItemSuccessLog(getSanitizedPageName(mediaUrl), createdMediaItemId);
+            addMediaItemImportedLog(getSanitizedPageName(mediaUrl), createdMediaItemId);
             return createdMediaItemId;
         }
         catch(error){
@@ -35,11 +35,13 @@ const getBasicAuthHeader = function(request){
 
 const invokeSPEWebApi = function(mediaImportApiUrl){
     var importedMediaItemId = '';
-    $.ajax({ url: mediaImportApiUrl, async: false, beforeSend: function(request) { getBasicAuthHeader(request)}})
+    var response = $.ajax({ url: mediaImportApiUrl, async: false, beforeSend: function(request) { getBasicAuthHeader(request)}})
         .done(function (response){ 
             importedMediaItemId = extractItemId(response);
             if(!importedMediaItemId)
                 throw response;
         });
+    if(response.status == 401)
+        throw 'Unable to create Media Item in Sitecore. Please update Sitecore credentials in Settings tab and try again.'
     return importedMediaItemId;
 }

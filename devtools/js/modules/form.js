@@ -28,6 +28,9 @@ const initializeImportForm = function () {
     });
     sitecoreUrl = localStorage.getItem('sitecoreUrl');
     $('#sitecoreUrl').val(sitecoreUrl);
+    if(sitecoreUrl){
+        updateAuthenticationStatus(sitecoreUrl);
+    }
     $('[data-toggle="tooltip"]').tooltip();
     $('#import').click(function (event) {
         preventReload(event);
@@ -72,8 +75,8 @@ $(document).on('click', '.authenticate.unauthorized', function () {
 
 $('.sitecore-tree').on("select_node.jstree", function (event, selected) {
     var associatedPathSelector = $('.tree-icon.active').siblings('.path-selector');
-    if(associatedPathSelector.val() != selected.node.data){
-        associatedPathSelector.val(selected.node.data);
+    if(associatedPathSelector.val().replace('/$name', '') != selected.node.data){
+        associatedPathSelector.val(`${selected.node.data}${associatedPathSelector.hasClass('target-selector') ? '/$name' : ''}`);
         associatedPathSelector.attr('data', selected.node.id);
         updateTemplateFields('.tree-icon.active', selected.node.id);
 
@@ -238,7 +241,7 @@ const reinitializeValidations = function(){
 }
 
 const clearValidations = function(){
-    $('#importForm').data('bootstrapValidator').destroy();
+    $('#importForm').data('bootstrapValidator')?.destroy();
     $('#importForm').data('bootstrapValidator', null);
 }
 

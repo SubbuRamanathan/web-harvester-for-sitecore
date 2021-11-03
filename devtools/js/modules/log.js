@@ -1,4 +1,4 @@
-export { addImportSuccessLog, addCreateItemSuccessLog, addInfoLog, addErrorLog, updateImportStatus, clearLogs }; 
+export { addImportSuccessLog, addCreateItemSuccessLog, addMediaItemImportedLog, addImportSkippedLog, addEditItemSuccessLog, addInfoLog, addErrorLog, updateImportStatus, clearLogs }; 
 
 import { getChromeExtensionOrigin, getHorizonAppUrl, getSitecoreUrl } from "./url.js";
 import { getContentLanguage } from "./settings.js";
@@ -10,9 +10,23 @@ const addImportSuccessLog = function(url) {
     addInfoLog(`Imported ${url} successfully!`);
 }
 
+const addImportSkippedLog = function(itemPath, itemId) {
+    addInfoLog(`Item already exists at ${itemPath}. Skipping Import.`, itemId);
+}
+
 const addCreateItemSuccessLog = function(itemName, itemId) {
     if(itemId)
         addInfoLog(`Created '${itemName}' item successfully!`, itemId);
+}
+
+const addMediaItemImportedLog = function(itemName, itemId) {
+    if(itemId)
+        addInfoLog(`Imported '${itemName}' successfully!`, itemId);
+}
+
+const addEditItemSuccessLog = function(itemName, itemId) {
+    if(itemId)
+        addInfoLog(`Updated '${itemName}' item successfully!`, itemId);
 }
 
 const addInfoLog = function(text, itemId) {
@@ -50,6 +64,7 @@ const getItemLink = function(itemId) {
 
 const clearLogs = function(){
     $('#importLogContainer').html('');
+    hasError = false;
 }
 
 const addToLogPanel = function(logText){
@@ -59,7 +74,7 @@ const addToLogPanel = function(logText){
 }
 
 const addLogsToStorage = function(importDetails){
-    chrome.storage.sync.get(importsKey, async (storage) => {
+    chrome.storage.local.get(importsKey, async (storage) => {
         let imports = storage.imports ?? [];
         let importId = imports.length;
         imports[importId] = {};
