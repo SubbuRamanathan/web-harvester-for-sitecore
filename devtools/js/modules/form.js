@@ -52,7 +52,7 @@ const updateLocalStorage = function () {
     localStorage.setItem('sitemapUrl', $('#sitemapUrl').val());
 };
 
-$(document).on('click', '#importForm a[href^="#"]', function(event){
+$(document).on('click', 'a[href^="#"]', function(event){
     var panelId = $(event.currentTarget).attr('href');
     if(panelId != '#'){
         closeAllPanels();

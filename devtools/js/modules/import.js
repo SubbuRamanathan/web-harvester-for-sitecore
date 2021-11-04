@@ -29,6 +29,7 @@ const initializeImport = function() {
     isAborted = false;
     addInfoLog('Import Started..');
     importDetails = getImportDetails();
+    importDetails.timestamp = new Date().getTime();
     var websiteUrls = getWebsiteUrls();
     websiteUrls.forEach((url) => {
         fetchAndProcess(url);

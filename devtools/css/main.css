@@ -626,6 +626,17 @@ select:invalid {
   color: var(--sitecore-red);
 }
 
+.history-table{
+  width: 80%;
+}
+
+.history-table td{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
 .d-contents{
   display: contents;
 }

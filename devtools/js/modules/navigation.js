@@ -1,5 +1,6 @@
 export { initializeNavigation, closeAllPanels }; 
 
+import { initializeHistoryTable } from "./history.js";
 import { sendRunTimeMessage } from "./message.js";
 import { initializeSettingsForm } from "./settings.js";
 import { fetchHTML } from "./url.js";
@@ -40,7 +41,7 @@ const closeAllPanels = function(){
 }
 
 const loadView = function(selectedViewUrl){
-    var loadedViews = $('#mainContainer').find('form');
+    var loadedViews = $('#mainContainer').find('form, table');
     var selectedView = loadedViews.filter(function() { return $(this).data('view') == selectedViewUrl });
     loadedViews.hide();
     if(selectedView.length > 0){
@@ -50,5 +51,6 @@ const loadView = function(selectedViewUrl){
         $('#mainContainer').append(fetchHTML(selectedViewUrl));
         initializeSettingsForm();
     }
+    initializeHistoryTable();
     $('#sidebar a').removeClass('selected');
 }

@@ -76,16 +76,20 @@ const addToLogPanel = function(logText){
 const addLogsToStorage = function(importDetails){
     chrome.storage.local.get(importsKey, async (storage) => {
         let imports = storage.imports ?? [];
-        let importId = imports.length;
-        imports[importId] = {};
-        imports[importId].details = importDetails;
-        imports[importId].logs = $('#importLogContainer').html();
+        let lastImportId = imports[imports.length - 1]?.id ?? 0;
+        let importInfo = new Object();
+        importInfo.id = lastImportId + 1;
+        importInfo.details = importDetails;
+        importInfo.logs = $('#importLogContainer').html();
+        imports.push(importInfo);
         chrome.storage.local.set({[importsKey]:imports});
     });
 }
 
 const updateImportStatus = function(importDetails, isAborted) {
     addInfoLog(isAborted ? 'Import Aborted' : hasError ? 'Import Completed with Errors' : 'Import Completed Successfully!');
+    let timeTaken = (new Date().getTime() - importDetails.timestamp) / 1000;
+    addInfoLog(`Finished in ${timeTaken} seconds`);
     $('#importForm').removeClass('importing').addClass(isAborted || hasError ? 'failed' : 'success');
     addLogsToStorage(importDetails);
 }
