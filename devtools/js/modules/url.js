@@ -1,4 +1,4 @@
-export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName, isRelativeUrl, getHorizonAppUrl, extractItemId, getChromeExtensionOrigin }; 
+export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreLaunchpadUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName, isRelativeUrl, getHorizonAppUrl, extractItemId, getChromeExtensionOrigin }; 
 
 const guidPattern = '(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}';
 
@@ -20,14 +20,27 @@ const getSitecoreUrl = function(){
     return $('#sitecoreUrl').val();
 }
 
+const getSitecoreLaunchpadUrl = function(){
+    let sitecoreUrl = getSitecoreUrl();
+    if(sitecoreUrl)
+        return `${getSitecoreUrl()}/shell/sitecore/client/Applications/Launchpad`;
+}
+
 const getSitecoreOrigin = function(){
     return getOrigin(getSitecoreUrl());
 }
 
 const fetchHTML = function(url) {
-    var outputHTML = '';
-    $.ajax({ url: url, async: false }).done(function (response){ outputHTML = response });
-    return outputHTML;
+    try{
+        var outputHTML = '';
+        $.ajax({ url: url, async: false }).done(function (response){ outputHTML = response });
+        return outputHTML;
+    }
+    catch(error){
+        console.log(`Fetch failed for ${url}`);
+        console.log(error.stack);
+    }
+    return '';
 }
 
 const fetchHTMLDocument = function(url) {
@@ -46,8 +59,7 @@ const isRelativeUrl = function(url){
 }
 
 const getHorizonAppUrl = function() {
-    const launchPadUrl = `${getSitecoreUrl()}/sitecore/shell/sitecore/client/Applications/Launchpad`;
-    var htmlDocument = fetchHTMLDocument(launchPadUrl);
+    var htmlDocument = fetchHTMLDocument(getSitecoreLaunchpadUrl());
     if(htmlDocument){
         var horizonTile = htmlDocument.querySelectorAll('a[title="Horizon"]');
         if(horizonTile.length > 0)

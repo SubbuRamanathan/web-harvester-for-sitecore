@@ -4,7 +4,7 @@ import { getChromeExtensionOrigin, getHorizonAppUrl, getSitecoreUrl } from "./ur
 import { getContentLanguage } from "./settings.js";
 
 let hasError = false;
-const importsKey = 'imports';
+let horizonUrl;
 
 const addImportSuccessLog = function(url) {
     addInfoLog(`Imported ${url} successfully!`);
@@ -55,7 +55,9 @@ const getErrorText = function(error, url){
 }
 
 const getItemLink = function(itemId) {
-    var horizonUrl = getHorizonAppUrl();
+    if(horizonUrl == undefined)
+        horizonUrl = getHorizonAppUrl();
+
     if(horizonUrl != '')
         return `${horizonUrl}/content/pages/editor?sc_itemid=${itemId}&sc_lang=${getContentLanguage()}`;
     else
@@ -63,8 +65,10 @@ const getItemLink = function(itemId) {
 }
 
 const clearLogs = function(){
+    $('#importForm').removeClass('success failed');
     $('#importLogContainer').html('');
     hasError = false;
+    horizonUrl = undefined;
 }
 
 const addToLogPanel = function(logText){
@@ -73,23 +77,9 @@ const addToLogPanel = function(logText){
 
 }
 
-const addLogsToStorage = function(importDetails){
-    chrome.storage.local.get(importsKey, async (storage) => {
-        let imports = storage.imports ?? [];
-        let lastImportId = imports[imports.length - 1]?.id ?? 0;
-        let importInfo = new Object();
-        importInfo.id = lastImportId + 1;
-        importInfo.details = importDetails;
-        importInfo.logs = $('#importLogContainer').html();
-        imports.push(importInfo);
-        chrome.storage.local.set({[importsKey]:imports});
-    });
-}
-
 const updateImportStatus = function(importDetails, isAborted) {
     addInfoLog(isAborted ? 'Import Aborted' : hasError ? 'Import Completed with Errors' : 'Import Completed Successfully!');
     let timeTaken = (new Date().getTime() - importDetails.timestamp) / 1000;
     addInfoLog(`Finished in ${timeTaken} seconds`);
     $('#importForm').removeClass('importing').addClass(isAborted || hasError ? 'failed' : 'success');
-    addLogsToStorage(importDetails);
 }

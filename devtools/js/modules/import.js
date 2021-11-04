@@ -1,35 +1,43 @@
 export { validateAndImportContent, clearAllMappingSections, abortImport, isImportAborted }; 
 
-import { getImportDetails } from "./save.js";
+import { addImportToStorage, getImportDetails } from "./save.js";
 import { composeCreateAPIRequest } from "./compose.js";
 import { getItemId, invokeCreateItemAPI, invokeEditItemAPI } from "./itemservice.js";
 import { addCreateItemSuccessLog, addEditItemSuccessLog, addErrorLog, addImportSkippedLog, addImportSuccessLog, addInfoLog, clearLogs, updateImportStatus } from "./log.js";
 import { isOverwriteAllowed } from "./settings.js";
+import { checkAuthenticationStatus } from "./authenticate.js";
 
 let importDetails;
 let urlsToImport;
 let importedUrlCount = 0;
 let isAborted = false;
 const validateAndImportContent = function(){
-    var importForm = $('#importForm').data('bootstrapValidator');
-    importForm.validate();
-    if(importForm.isValid()){
+    if(isValid()){
         initializeLogs();
         initializeImport();
     }
 }
 
+const isValid = function(){
+    var importForm = $('#importForm').data('bootstrapValidator');
+    importForm.validate();
+    if(importForm.isValid()){
+        return checkAuthenticationStatus();
+    }
+    return false;
+}
+
 const initializeLogs = function(){
     clearLogs();
-    $('#importForm').removeClass('success failed').addClass('importing');
-    $('#importDetails').click();
+    $('#importForm').addClass('importing');
+    $('#importDetails').trigger('click');
 }
 
 const initializeImport = function() {
     isAborted = false;
+    $('#import').prop('disabled', true);
     addInfoLog('Import Started..');
     importDetails = getImportDetails();
-    importDetails.timestamp = new Date().getTime();
     var websiteUrls = getWebsiteUrls();
     websiteUrls.forEach((url) => {
         fetchAndProcess(url);
@@ -90,7 +98,9 @@ const pollImportStatus = function(){
     timer = setInterval(function(){
         if(importedUrlCount == urlsToImport.length){
             updateImportStatus(importDetails, false);
+            addImportToStorage(importDetails);
             clearInterval(timer);
+            $('#import').prop('disabled', false);
         }
     }, 500);
 }
@@ -103,6 +113,8 @@ const abortImport = function(){
     isAborted = true;
     clearInterval(timer);
     updateImportStatus(importDetails, true);
+    addImportToStorage(importDetails, $('#importLogContainer').html());
+    $('#import').prop('disabled', false);
 }
 
 const isImportAborted = function(){

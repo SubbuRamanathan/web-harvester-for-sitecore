@@ -38,10 +38,10 @@ const initializeSettingsForm = function(){
     if($('#settingsForm').length > 0){
         Object.keys(settings).forEach(key => $(`#settingsForm #${key}`).val(settings[key]));
         if(settings.overwriteBehavior)
-            $(`#settingsForm #${settings.overwriteBehavior}`).click();
+            $(`#settingsForm #${settings.overwriteBehavior}`).trigger('click');
 
         initializeSettingsFormValidation();
-        $('#settingsForm #save').click(function(event){
+        $('#settingsForm #save').on('click', function(event){
             updateSettings(event);
         });
         $('[data-toggle="tooltip"]').tooltip();

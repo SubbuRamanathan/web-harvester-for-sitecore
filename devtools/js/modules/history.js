@@ -1,5 +1,6 @@
 export { initializeHistoryTable }; 
 
+import { populateImportForm } from "./populate.js";
 import { fetchHTML } from "./url.js";
 
 const importsKey = 'imports';
@@ -34,7 +35,7 @@ const getEntryHTML = function(entry){
 }
 
 const initializeViewLogAction = function(){
-    $('.view-log').click(function(e){
+    $('.view-log').on('click', function(e){
         let importId = $(e.currentTarget).data('id');
         chrome.storage.local.get(importsKey, async (storage) => {
             var logs = storage.imports.find(i => i.id == importId).logs;
@@ -44,7 +45,7 @@ const initializeViewLogAction = function(){
 }
 
 const initializeRerunImportAction = function(){
-    $('.rerun-import').click(function(){
+    $('.rerun-import').on('click', function(e){
         let importId = $(e.currentTarget).data('id');
         chrome.storage.local.get(importsKey, async (storage) => {
             var importDetails = storage.imports.find(i => i.id == importId).details;
@@ -54,7 +55,7 @@ const initializeRerunImportAction = function(){
 }
 
 const initializeDeleteImportAction = function(){
-    $('.delete-import').click(function(e){
+    $('.delete-import').on('click', function(e){
         let importId = $(e.currentTarget).data('id');
         let importEntry = $(e.currentTarget).parents('tr');
         chrome.storage.local.get(importsKey, async (storage) => {
@@ -64,10 +65,6 @@ const initializeDeleteImportAction = function(){
             chrome.storage.local.set({[importsKey]:imports});
         });
     });
-}
-
-const populateImportForm = function(importDetails){
-    
 }
 
 const formatDateTime = function(dateObject){

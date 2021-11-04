@@ -1,7 +1,37 @@
-export { initializeTree, expandTree }; 
+export { initializeTreeEvents, initializeTree }; 
 
 import { getSitecoreOrigin } from "./url.js";
 import { invokeGetItemAPI, invokeGetChildrenAPI, getItemId } from "./itemservice.js"; 
+import { updateTemplateFields } from "./fields.js";
+import { reinitializeValidations } from "./form.js";
+
+const initializeTreeEvents = function(){    
+    $('.sitecore-tree').on("select_node.jstree", function (event, selected) {
+        var associatedPathSelector = $('.tree-icon.active').siblings('.path-selector');
+        if(associatedPathSelector.val().replace('/$name', '') != selected.node.data){
+            associatedPathSelector.val(`${selected.node.data}${associatedPathSelector.hasClass('target-selector') ? '/$name' : ''}`);
+            associatedPathSelector.attr('data', selected.node.id);
+            updateTemplateFields('.tree-icon.active', selected.node.id);
+
+            $('.close-icon').trigger('click');
+            reinitializeValidations();
+        }
+    });
+
+    $(document).on('focusout', '.template-selector', function(e){
+        var templateId = getItemId(e.currentTarget.value);
+        updateTemplateFields(e.currentTarget, templateId);
+    });
+
+    $(document).on('click', '[href$="PathPanel"]', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        $(e.currentTarget).toggleClass('active');
+        if($(e.currentTarget).hasClass('active'))
+            expandTree(e.currentTarget);
+    });
+}
 
 const initializeTree = function(){
     $('.sitecore-tree').each(function() {

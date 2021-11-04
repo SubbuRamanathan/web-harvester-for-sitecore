@@ -476,38 +476,39 @@ form .btn {
   background-color: var(--base00);
 }
 
-.authenticate{
+#authenticate{
+  position: absolute;
+  height: -webkit-fill-available;
+  right: 22px;
+  top: 0px;
+}
+
+#authenticate.success #authenticationSucceeded,
+#authenticate.invalid #invalidUrl,
+#authenticate.unauthorized #authenticationFailed {
+  display: block !important;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#authenticate.checking #authenticationLoading{
+  display: block !important;
+  position: relative;
+  top: 17.5%;
+}
+
+#authenticate.unauthorized button{
+  background: var(--sitecore-red);
+  display: block !important;
+  opacity: 0.7;
   border: none;
   font-weight: 400;
   color: var(--base00);
-  background-color: var(--base10);
-  font-size: 0.9em;
   width: max-content;
-}
-
-.authenticate:hover{
-  color: var(--base00);
-}
-
-.authenticate.success{
-  background-color: #90EE90;
-  display: block;
-  opacity: 1;
-}
-
-.authenticate.unauthorized{
-  background: var(--sitecore-red);
-  cursor: pointer;
-  display: block !important;
-  opacity: 0.7;
-}
-
-.authenticate #authenticateLoading{
-  margin: 4px 4px 0px 0px;
-}
-
-.authenticate.success > span, .authenticate.unauthorized > span {
-  display: none;
+  height: 22px;
+  margin-right: -5px;
+  line-height: 1;
 }
 
 .jstree-anchor > .jstree-icon{
@@ -577,35 +578,14 @@ select:invalid {
   text-decoration: underline;
 }
 
-#importForm.importing #importDetails,
-#importForm.success #importDetails,
-#importForm.failed #importDetails {
-  display: block !important;
-}
-
-#importForm.importing #importProgressMessage {
-  display: block !important;
-}
-
-#importForm.importing #abortImport {
-  display: block !important;
-}
-
-#importForm.success #resetImport,
-#importForm.failed #resetImport {
-  display: block !important;
-}
-
-#importForm.success #importSuccessMessage {
+#importForm.importing #importDetails, #importForm.importing #abortImport, #importForm.importing #importProgressMessage,
+#importForm.success #importDetails, #importForm.success #resetImport, #importForm.success #importSuccessMessage,
+#importForm.failed #importDetails, #importForm.failed #resetImport, #importForm.failed #importFailureMessage {
   display: block !important;
 }
 
 #importForm.success #importDetails {
   color: var(--sitecore-green) !important;
-}
-
-#importForm.failed #importFailureMessage {
-  display: block !important;
 }
 
 #importForm.failed #importDetails {

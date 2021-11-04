@@ -1,10 +1,45 @@
-export { populateMappingSection, validateAndAddMapping, initializeDeleteOptions, addComplexFieldWarning };
+export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeAddMappingSectionLink, validateAndAddMapping, addMapping, initializeDeleteOptions };
 
 import { clearValidations, initializeFormValidation, reinitializeValidations } from "./form.js"
+import { closeAllPanels } from "./navigation.js";
+import { initializeReplaceMapping, updateReplaceOptions, validateAndAddComplexFieldReplaceOptions, validateAndAddReplaceMapping } from "./replace.js";
 import { fetchHTML } from "./url.js";
 
 const linkFieldTypes = ['Internal Link', 'General Link', 'General Link with Search', 'link'];
-const warningMessage = 'Ensure that the selected Element/Attribute text format is supported by the Template Field'
+const warningMessage = 'Ensure that the selected Element/Attribute text format is supported by the Template Field';
+
+const initializeMappingEvents = function(){
+    $(document).on('change', '.field-select', function(event) {
+        validateAndAddMapping($(event.target).parents('.destination-group-map'));
+        validateAndAddComplexFieldReplaceOptions($(event.target).parents('.destination-field-map'));
+        addComplexFieldWarning($(event.target));
+        closeAllPanels();
+    });
+
+    $(document).on('click', '.find-replace', function(event){
+        initializeReplaceMapping(event.currentTarget);
+        $(event.currentTarget).addClass('active');
+    });
+
+    $(document).on('focusout', '.find-text, .replace-text', function(event) {
+        validateAndAddReplaceMapping();
+    });
+
+    $(document).on('click', '#confirmReplace', function(event){
+        event.stopPropagation();
+        event.preventDefault();
+        updateReplaceOptions();
+    });
+
+    $(document).on('click', '.delete-mapping', function(event){
+        var mappingSection = $(event.currentTarget).parents('.destination-group-map');
+        clearValidations();
+        $(event.currentTarget).parents('.destination-field-map').remove();
+        initializeDeleteOptions(mappingSection);
+        initializeFormValidation();
+    });
+}
+
 const populateMappingSection = function(){
     $('#mappingTemplateSection').removeClass('d-none');
     if($('#mappingTemplateSection').html().trim() == ''){
@@ -21,20 +56,23 @@ const appendMappingSection = function(){
 
 const addMappingSection = function(){
     appendMappingSection();
-    var deleteMappingSection = $('#mappingTemplateSection .delete-mapping-section:last');
-    deleteMappingSection.removeClass('d-none');
-    deleteMappingSection.click(function(event){
-        clearValidations();
-        $(event.currentTarget).parents('.destination-group-map').remove();
-        initializeFormValidation();
-    });
+    if($('#mappingTemplateSection .delete-mapping-section').length > 1){
+        var deleteMappingSection = $('#mappingTemplateSection .delete-mapping-section:last');
+        deleteMappingSection.removeClass('d-none');
+        deleteMappingSection.on('click', function(event){
+            clearValidations();
+            $(event.currentTarget).parents('.destination-group-map').remove();
+            initializeFormValidation();
+        });
+    }
 }
 
 const initializeAddMappingSectionLink = function(){
     $('#addLinkSection').append(fetchHTML('./views/AddSectionLink.html'));
     $('[data-toggle="tooltip"]').tooltip();
-    $('#addMappingSection').click(function(){
+    $('#addMappingSection').on('click', function(){
         addMappingSection();
+        $('[data-toggle="tooltip"]').tooltip();
     });
 }
 
@@ -57,6 +95,7 @@ const addMapping = function(mappingSection){
     
     initializeDeleteOptions(mappingSection);
     reinitializeValidations();
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 const initializeMappingValidations = function(mappingSection, selector){

@@ -5,22 +5,25 @@
             <textarea id="webpageUrls" name="webpageUrls" class="form-control outline-none w-100" rows="2"
                 placeholder="Enter Website URL(s) (semi-colon separated) or click fetch button to pull from Sitemap"></textarea>
         </div>
-        <div class="col-lg-1">
-            <a id="fetchUrls" href="#sitemapPanel">
-                <img src="./images/sitemap.svg" />
-            </a>
-        </div>
+        <a id="fetchUrls" href="#sitemapPanel" title="Fetch Urls from Sitemap">
+            <img src="./images/sitemap.svg" />
+        </a>
     </div>
     <div class="row py-2 mb-3 w-100 form-group">
         <div class="col-lg-2"><strong>Sitecore URL:</strong></div>
-        <div class="col-lg-6"><input id="sitecoreUrl" name="sitecoreUrl" class="form-control"
-                placeholder="Enter Target Sitecore URL" type="text"></div>
-        <div class="col-lg-2">
-            <button id="authenticate" class="authenticate btn d-none" type="button" disabled>
-                <span id="authenticateLoading" class="spinner-grow spinner-grow-sm float-left" role="status"
-                    aria-hidden="true"></span>
-                <span id="authenticateText" class="float-left d-block">Checking...</span>
-            </button>
+        <div class="col-lg-6 pos-relative">
+            <input id="sitecoreUrl" name="sitecoreUrl" class="form-control" placeholder="Enter Target Sitecore URL"
+                type="text">
+            <div id="authenticate">
+                <img id="authenticationSucceeded" src="./images/tick.svg" class="d-none" width="18px" />
+                <img id="invalidUrl" src="./images/warning.svg" class="d-none" width="20px"
+                    title="Entered Sitecore Url is invalid" />
+                <span id="authenticationLoading"
+                    class="d-none spinner-border ml-3 mr-2 text-base12 loading-spinner d-none"></span>
+                <button id="authenticationFailed" class="btn d-none" type="button">
+                    Authenticate to Proceed ➡
+                </button>
+            </div>
         </div>
     </div>
     <div id="mappingTemplateSection" class="d-none w-100 pb-3">
@@ -29,7 +32,7 @@
     </div>
     <button id="save" class="btn btn-info my-2 mr-3" type="submit">Save</button>
     <button id="import" class="btn btn-info my-2" type="submit">Import</button>
-    <span class="pt-3 px-3 d-none" id="saveSuccessMessage">Saved Successfully!</span>
+    <span class="pt-3 px-3 collapse" id="saveSuccessMessage">Saved Successfully!</span>
     <span class="pt-3 px-3 d-none" id="importSuccessMessage">Imported Successfully!</span>
     <div class="mt-3 d-none" id="importProgressMessage"><span
             class="spinner-border ml-3 mr-2 text-base12 loading-spinner"></span>Importing.. Please wait!</div>

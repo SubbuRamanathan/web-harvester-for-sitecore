@@ -1,47 +1,58 @@
 export { initializeImportForm, initializeFormValidation, reinitializeValidations, clearValidations }
 
-import { sendRunTimeMessage } from "./message.js";
-import { updateAuthenticationStatus } from "./authenticate.js";
-import { updateTemplateFields } from "./fields.js";
-import { getOrigin } from "./url.js";
-import { expandTree } from "./tree.js";
-import { getItemId } from "./itemservice.js";
-import { validateAndAddMapping, initializeDeleteOptions, addComplexFieldWarning } from "./template.js";
-import { initializeReplaceMapping, validateAndAddReplaceMapping, validateAndAddComplexFieldReplaceOptions, updateReplaceOptions } from "./replace.js";
+import { initializeAuthenticationEvents, updateAuthenticationStatus } from "./authenticate.js";
+import { initializeTreeEvents } from "./tree.js";
+import { initializeMappingEvents } from "./template.js";
 import { abortImport, clearAllMappingSections, validateAndImportContent } from "./import.js";
-import { closeAllPanels } from "./navigation.js";
-import "./sitemap.js";
+import { addImportToStorage, initializeSaveLog } from "./save.js";
+import { initializeSitemap } from "./sitemap.js";
+import { initializeDomEvents } from "./dom.js";
 
 var sitecoreUrl;
 const initializeImportForm = function () {
+    initializeBasicInfo();
+    initializeFormEvents();
+    initializeAuthenticationEvents();
+    initializeMappingEvents();
+    initializeTreeEvents();
+    initializeDomEvents();
+    initializeFormValidation();
+}
+
+const initializeBasicInfo = function(){
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
         var tabUrl = tabs[0]?.url;
         if (tabUrl) {
-            var defaultWildCardPattern = tabUrl?.substr(0, tabUrl.lastIndexOf("/")) + '/(.*)';
-            var defaultSitemapUrl = localStorage.getItem('sitemapUrl');
-            if (!defaultSitemapUrl)
-                defaultSitemapUrl = `${getOrigin(tabUrl)}/sitemap.xml`;
+            initializeSitemap(tabUrl);
             $('#webpageUrls').val(tabUrl);
-            $('#urlPattern').val(defaultWildCardPattern);
-            $('#sitemapUrl').val(defaultSitemapUrl);
         }
     });
     sitecoreUrl = localStorage.getItem('sitecoreUrl');
     $('#sitecoreUrl').val(sitecoreUrl);
-    if(sitecoreUrl){
-        updateAuthenticationStatus(sitecoreUrl);
-    }
+    setTimeout(() => {
+        updateAuthenticationStatus();        
+    }, 100);
     $('[data-toggle="tooltip"]').tooltip();
-    $('#import').click(function (event) {
+}
+
+const initializeFormEvents = function(){
+    $('#import').on('click', function (event) {
         preventReload(event);
         updateLocalStorage();
         validateAndImportContent();
     });
-    $('#resetImport').click(function(event){
+    $('#importForm #save').on('click', function (event) {
+        preventReload(event);
+        updateLocalStorage();
+        initializeSaveLog();
+        addImportToStorage();
+        $("#importForm #saveSuccessMessage").show().delay(2400).fadeOut(300);
+    });
+    $('#resetImport').on('click', function(event){
         preventReload(event);
         clearAllMappingSections();
     });
-    $('#abortImport').click(function(event){
+    $('#abortImport').on('click', function(event){
         preventReload(event);
         abortImport();
     });
@@ -51,129 +62,6 @@ const updateLocalStorage = function () {
     localStorage.setItem('sitecoreUrl', $('#sitecoreUrl').val());
     localStorage.setItem('sitemapUrl', $('#sitemapUrl').val());
 };
-
-$(document).on('click', 'a[href^="#"]', function(event){
-    var panelId = $(event.currentTarget).attr('href');
-    if(panelId != '#'){
-        closeAllPanels();
-        $(panelId).show();
-    }
-});
-
-$(document).on('focusout', '#sitecoreUrl', function () {
-    sitecoreUrl = $('#sitecoreUrl').val();
-    updateAuthenticationStatus(sitecoreUrl);
-});
-
-$(window).focus(function () {
-    updateAuthenticationStatus(sitecoreUrl)
-});
-
-$(document).on('click', '.authenticate.unauthorized', function () {
-    chrome.tabs.create({ url: sitecoreUrl });
-});
-
-$('.sitecore-tree').on("select_node.jstree", function (event, selected) {
-    var associatedPathSelector = $('.tree-icon.active').siblings('.path-selector');
-    if(associatedPathSelector.val().replace('/$name', '') != selected.node.data){
-        associatedPathSelector.val(`${selected.node.data}${associatedPathSelector.hasClass('target-selector') ? '/$name' : ''}`);
-        associatedPathSelector.attr('data', selected.node.id);
-        updateTemplateFields('.tree-icon.active', selected.node.id);
-
-        $('.close-icon').click();
-        reinitializeValidations();
-    }
-});
-
-$(document).on('focusout', '.template-selector', function(e){
-    var templateId = getItemId(e.currentTarget.value);
-    updateTemplateFields(e.currentTarget, templateId);
-});
-
-$(document).on('click', '[href$="PathPanel"]', function (e) {
-    preventReload(e);
-    
-    $(e.currentTarget).toggleClass('active');
-    if($(e.currentTarget).hasClass('active'))
-        expandTree(e.currentTarget);
-});
-
-var timer = 0;
-var preventSingleClick = false;
-var lastActiveDOMPicker;
-
-$(document).on('dblclick', '.dom-picker', function (event) {
-    clearTimeout(timer);
-    preventSingleClick = true;
-    pickDOMElement(event, true);
-});
-
-$(document).on('click', '.dom-picker', function (event) {
-    timer = setTimeout(validateSingleClick, 200, event);
-});
-
-const validateSingleClick = function(event){
-    if (!preventSingleClick) {
-        pickDOMElement(event, false);
-    }
-    preventSingleClick = false;
-}
-
-const pickDOMElement = function(event, multiselect){
-    var pickDOMButton = $(event.target).parents('.dom-picker');
-    pickDOMButton.toggleClass('active');
-    var isDOMPickerActive = pickDOMButton.hasClass('active');
-    if(!isDOMPickerActive) 
-        lastActiveDOMPicker = pickDOMButton;
-    sendRunTimeMessage({ method: 'pickDOM', pickDOM: isDOMPickerActive, multiSelect: multiselect });
-}
-
-chrome.runtime.onMessage.addListener(function(message) {
-    switch(message.method){
-		case 'pickDOM':
-			processXPaths(message);
-			break;
-	}
-});
-
-const processXPaths = function(message){
-    var selectedXPaths = message.xpaths.join(' || ')
-    var associatedDomPicker = $('.dom-picker.active');
-    if(associatedDomPicker.length == 0) 
-        associatedDomPicker = lastActiveDOMPicker;
-    associatedDomPicker.removeClass('active').siblings('.dom-path').val(selectedXPaths);
-    validateAndAddMapping(associatedDomPicker.parents('.destination-group-map'));
-    reinitializeValidations();
-}
-
-$(document).on('change', '.field-select', function(event) {
-    validateAndAddMapping($(event.target).parents('.destination-group-map'));
-    validateAndAddComplexFieldReplaceOptions($(event.target).parents('.destination-field-map'));
-    addComplexFieldWarning($(event.target));
-    closeAllPanels();
-});
-
-$(document).on('focusout', '.find-text, .replace-text', function(event) {
-    validateAndAddReplaceMapping();
-});
-
-$(document).on('click', '.delete-mapping', function(event){
-    var mappingSection = $(event.currentTarget).parents('.destination-group-map');
-    clearValidations();
-    $(event.currentTarget).parents('.destination-field-map').remove();
-    initializeDeleteOptions(mappingSection);
-    initializeFormValidation();
-});
-
-$(document).on('click', '.find-replace', function(event){
-    initializeReplaceMapping(event.currentTarget);
-    $(event.currentTarget).addClass('active');
-});
-
-$(document).on('click', '#confirmReplace', function(event){
-    preventReload(event);
-    updateReplaceOptions();
-});
 
 const initializeFormValidation = function(){
     $('#importForm').bootstrapValidator({
