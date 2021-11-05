@@ -1,4 +1,4 @@
-export { initializeSettings, getSettings, getCredentials, isOverwriteAllowed, updateSettings, initializeSettingsForm, getContentLanguage }; 
+export { initializeSettings, getSettings, getCredentials, isOverwriteAllowed, initializeSettingsForm, getContentLanguage }; 
 
 let settings;
 const settingsKey = 'settings';

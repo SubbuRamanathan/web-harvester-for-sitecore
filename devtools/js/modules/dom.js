@@ -1,8 +1,8 @@
+export { initializeDomEvents }
+
 import { reinitializeValidations } from "./form.js";
 import { sendRunTimeMessage } from "./message.js";
 import { initializeMappingValidation, validateAndAddMapping } from "./template.js";
-
-export { initializeDomEvents }
 
 const initializeDomEvents = function(){
     var timer = 0;

@@ -1,4 +1,4 @@
-export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeAddMappingSectionLink, initializeMappingValidation, validateAndAddMapping, addMapping, initializeDeleteOptions };
+export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeMappingValidation, validateAndAddMapping, addMapping, initializeDeleteOptions };
 
 import { clearValidations, initializeFormValidation, reinitializeValidations } from "./form.js"
 import { closeAllPanels } from "./navigation.js";

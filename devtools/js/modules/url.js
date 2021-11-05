@@ -1,4 +1,4 @@
-export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreLaunchpadUrl, getSitecoreOrigin, fetchHTML, fetchHTMLDocument, getPageName, isRelativeUrl, getHorizonAppUrl, extractItemId, getChromeExtensionOrigin }; 
+export { isValidUrl, getOrigin, getSitecoreUrl, getSitecoreLaunchpadUrl, getSitecoreOrigin, fetchHTML, getPageName, isRelativeUrl, getHorizonAppUrl, extractItemId, getChromeExtensionOrigin }; 
 
 const guidPattern = '(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}';
 

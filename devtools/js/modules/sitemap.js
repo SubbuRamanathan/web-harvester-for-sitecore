@@ -1,6 +1,6 @@
-import { getOrigin } from "./url.js";
-
 export { initializeSitemap }
+
+import { getOrigin } from "./url.js";
 
 const initializeSitemap = function(tabUrl){
     var defaultWildCardPattern = tabUrl?.substr(0, tabUrl.lastIndexOf("/")) + '/(.*)';

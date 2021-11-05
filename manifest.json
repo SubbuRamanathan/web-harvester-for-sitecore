@@ -16,7 +16,7 @@
 	"action": {
 		"default_popup": "options/options.html",
 		"default_title": "Web Harvester for Sitecore (options)",
-		"default_icon": "assets/images/icon38.png"
+		"default_icon": "assets/images/icon48.png"
 	},
 	"devtools_page": "devtools/devtools_page.html",
 	"content_security_policy": {
