@@ -30,13 +30,14 @@ const checkAuthenticationStatus = function(){
     if(isValidUrl(getSitecoreUrl()) && !$('#authenticate').parents('.form-group').hasClass('has-error')){
         if(isAuthenticated()){
             $('#authenticate').removeClass('checking').addClass('success');
+            $('#import').prop('disabled', false);
             populateMappingSection();
             initializeTree();
             return true;
         }
         else{
             $('#authenticate').removeClass('checking').addClass('unauthorized');
-            $('#authenticationFailed').trigger('focus');
+            $('#authenticationFailed').focus();
         }
     }
     else

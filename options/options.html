@@ -14,10 +14,18 @@
     </div>
     <div class="container">
       <p class="abstract">This Extension enables content administrators/developers to harvest any website's content into Sitecore</p>
+      <p class="content"><b>PREREQUISITES:</b></p>
+      <ul>
+        <li>Ensure that either ServicesOnPolicy or ServicesLocalOnlyPolicy(if Sitecore is hosted locally) is configured for Sitecore.Services.SecurityPolicy in the Sitecore.Services.Client.config of your Sitecore instance</li>
+        <li>For importing media into Sitecore,</li>
+        <ul>
+          <li>Ensure <a href="https://github.com/SitecorePowerShell/Console/releases" target="_blank">Sitecore Powershell Extensions</a> is installed in your Sitecore instance</li>
+          <li>Install the below Sitecore Powershell Module in your Sitecore instance, <a href="https://github.com/SubbuRamanathan/web-harvester-for-sitecore/releases/tag/v1.0" target="_blank">https://github.com/SubbuRamanathan/web-harvester-for-sitecore/releases/tag/v1.0</a></li>
+          <li>Enable 'restfulv2' in Sitecore Powershell Config as described <a href="https://doc.sitecorepowershell.com/security#configure-web-services" target="_blank">here</a></li>
+          <li>Specify Sitecore credentials(ensure appropriate create permissions for media library) in the 'Settings' tab of 'Web Harvester' DevTools Panel. This Chrome Extension does not collect any information including credentials from you. Please review the <a href="https://github.com/SubbuRamanathan/web-harvester-for-sitecore/blob/main/privacy-policy.md" target="_blank">privacy policy</a> for more details. Alternatively, anonymous access can be enabled for 'restfulv2'(not recommended).</li>
+        </ul>
+      </ul>
       <p class="content"><b>To migrate a website's content into Sitecore</b>, you must right-click on the intended website page and select 'Inspect Element' or press 'F12' to launch Developer Tools. Navigate to 'Web Harvester' panel in the Developer Tools to begin import process by selecting DOMs and Sitecore Item Path, Template & Fields.</p>
-      <p class="content"><b><span class="danger">IMPORTANT: </span>For importing media</b>, you will need to install the below Sitecore Powershell Module in your Sitecore instance and specify Sitecore credentials(ensure appropriate create permissions for media library) in the 'Settings' tab of 'Web Harvester' DevTools Panel. This Chrome Extension does not collect any information including credentials from you. Please review the <a href="https://github.com/SubbuRamanathan/web-harvester-for-sitecore/blob/main/privacy-policy.md" target="_blank">privacy policy</a> for more details.
-        <a href="https://github.com/SubbuRamanathan/web-harvester-for-sitecore/releases/tag/v1.0" target="_blank">https://github.com/SubbuRamanathan/web-harvester-for-sitecore/releases/tag/v1.0</a>
-      </p>
     </div>
     <div class="container">
       <p class="info">

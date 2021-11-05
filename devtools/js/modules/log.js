@@ -1,4 +1,4 @@
-export { addImportSuccessLog, addCreateItemSuccessLog, addMediaItemImportedLog, addImportSkippedLog, addEditItemSuccessLog, addInfoLog, addErrorLog, updateImportStatus, clearLogs }; 
+export { addImportSuccessLog, addCreateItemSuccessLog, addMediaItemImportedLog, addImportSkippedLog, addEditItemSuccessLog, addInfoLog, addWarningLog, addErrorLog, updateImportStatus, clearLogs }; 
 
 import { getChromeExtensionOrigin, getHorizonAppUrl, getSitecoreUrl } from "./url.js";
 import { getContentLanguage } from "./settings.js";
@@ -34,6 +34,11 @@ const addInfoLog = function(text, itemId) {
     addToLogPanel(logText);
 }
 
+const addWarningLog = function(text) {
+    let logText = getWarningLogText(text);
+    addToLogPanel(logText);
+}
+
 const addErrorLog = function(error, url) {
     let logText = getErrorText(error.stack ?? error, url);
     addToLogPanel(logText);
@@ -46,6 +51,10 @@ const getLogText = function(text, itemId) {
     }
     text += '<br/>';
     return text;
+}
+
+const getWarningLogText = function(text) {
+    return `<span class='log-warning'>${text}</span><br/>`;
 }
 
 const getErrorText = function(error, url){

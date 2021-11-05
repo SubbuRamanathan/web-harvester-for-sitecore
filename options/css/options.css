@@ -5,7 +5,7 @@ body {
   font-family: "Noto Sans JP", sans-serif;
 }
 .header{
-  margin: 30px 0px;
+  margin-top: 30px;
 }
 .header img{
   padding: 10px;
@@ -21,6 +21,7 @@ body {
   font-weight: 300;
   width: inherit;
   padding: 0px 15px;
+  float: left;
 }
 .container b{
   font-weight: 600;
@@ -29,6 +30,10 @@ body {
   list-style-type: circle;
   font-family: inherit;
   font-size: 1.1em;
+  padding-inline-start: 25px;
+}
+.container ul ul{
+  font-size: 1em;
 }
 .container a{
   color: #ee3524;

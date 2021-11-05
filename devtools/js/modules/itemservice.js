@@ -35,7 +35,7 @@ const invokeCreateItemAPI = function(parentItemPath, data){
     var response = invokeWriteItemServiceAPI(itemServiceAPIUrl,'POST', data);
     let createdItemId = extractItemId(response.getResponseHeader('location'));
     if(!createdItemId)
-        throw `Unable to create item in Sitecore (${getErrorMessage()})`;
+        throw `Unable to create item in Sitecore ${getErrorMessage()}`;
     return createdItemId;
 }
 
@@ -43,7 +43,7 @@ const invokeEditItemAPI = function(itemId, data){
     var itemServiceAPIUrl = `${getSitecoreUrl()}/api/ssc/item/${itemId}?database=master&language=${getContentLanguage()}`;
     var response = invokeWriteItemServiceAPI(itemServiceAPIUrl, 'PATCH', data);
     if(response.status != 204)
-        throw `Unable to update item in Sitecore (${getErrorMessage()})`;
+        throw `Unable to update item in Sitecore ${getErrorMessage()}`;
     return itemId;
 }
 
@@ -61,5 +61,5 @@ const getItemId = function(itemPath){
 }
 
 const getErrorMessage = function(response){
-    return `${response.status} - ${response.responseJSON?.Message ?? response.responseText}`;
+    return response ? `(${response.status} - ${response.responseJSON?.Message ?? response.responseText})` : '';
 }

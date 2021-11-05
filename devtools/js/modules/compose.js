@@ -1,5 +1,6 @@
 export { composeCreateAPIRequest, getSanitizedPageName }; 
 
+import { addWarningLog } from "./log.js";
 import { importMedia } from "./media.js";
 import { getSettings } from "./settings.js";
 import { getOrigin, getPageName, isRelativeUrl } from "./url.js";
@@ -64,6 +65,10 @@ const getContent = function(url, document, mediaPath, xpathInfo, replaceOptions)
 
 const getXPathContent = function(url, document, xpath){
     var domElement = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext();
+    if(!domElement) {
+        addWarningLog(`XPath(${xpath}) not found in ${url}`);
+        return '';
+    }
     return domElement.innerHTML ?? ensureAbsoluteUrl(domElement.value, url);
 }
 

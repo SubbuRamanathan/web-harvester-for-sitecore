@@ -620,3 +620,7 @@ select:invalid {
 .d-contents{
   display: contents;
 }
+
+.log-warning{
+  color: #ff9966;
+}

@@ -6,6 +6,7 @@ import { getItemId, invokeCreateItemAPI, invokeEditItemAPI } from "./itemservice
 import { addCreateItemSuccessLog, addEditItemSuccessLog, addErrorLog, addImportSkippedLog, addImportSuccessLog, addInfoLog, clearLogs, updateImportStatus } from "./log.js";
 import { isOverwriteAllowed } from "./settings.js";
 import { checkAuthenticationStatus } from "./authenticate.js";
+import { initializeMappingValidations } from "./template.js";
 
 let importDetails;
 let urlsToImport;
@@ -19,6 +20,7 @@ const validateAndImportContent = function(){
 }
 
 const isValid = function(){
+    initializeMappingValidations();
     var importForm = $('#importForm').data('bootstrapValidator');
     importForm.validate();
     if(importForm.isValid()){

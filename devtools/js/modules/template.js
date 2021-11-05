@@ -1,4 +1,4 @@
-export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeMappingValidation, validateAndAddMapping, addMapping, initializeDeleteOptions };
+export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeMappingValidations, validateAndAddMapping, addMapping, initializeDeleteOptions };
 
 import { clearValidations, initializeFormValidation, reinitializeValidations } from "./form.js"
 import { closeAllPanels } from "./navigation.js";
@@ -13,7 +13,6 @@ const initializeMappingEvents = function(){
         validateAndAddMapping($(event.target).parents('.destination-group-map'));
         validateAndAddComplexFieldReplaceOptions($(event.target).parents('.destination-field-map'));
         addComplexFieldWarning($(event.target));
-        initializeMappingValidation($(event.target).parents('.destination-field-map'));
         closeAllPanels();
     });
 
@@ -100,6 +99,13 @@ const initializeMappingValidation = function(fieldMap){
     fieldMap.find('.field-select').attr('name', enableValidation ? 'fieldSelector' : '');
     fieldMap.find('.dom-path').attr('name', enableValidation ? 'domSelector' : '');
 }
+
+const initializeMappingValidations = function(){
+    $('#mappingTemplateSection .destination-group-map').find('.destination-field-map:not(:last)').each(function(){
+        initializeMappingValidation($(this));
+    });
+    reinitializeValidations();
+} 
 
 const initializeDeleteOptions = function(mappingSection){
     var fieldMappingsDeleteOptions = mappingSection.find('.delete-mapping');

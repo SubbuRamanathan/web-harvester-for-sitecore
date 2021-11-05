@@ -41,6 +41,10 @@ const initializeNavigationEvents = function(){
     $('.close-icon').on('click', function () {
         closeAllPanels();
     });
+
+    $('body').on('contextmenu', function() {
+        return false;
+    });
 }
 
 const closeAllPanels = function(){

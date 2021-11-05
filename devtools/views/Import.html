@@ -5,7 +5,7 @@
             <textarea id="webpageUrls" name="webpageUrls" class="form-control outline-none w-100" rows="2"
                 placeholder="Enter Website URL(s) (semi-colon separated) or click fetch button to pull from Sitemap"></textarea>
         </div>
-        <a id="fetchUrls" href="#sitemapPanel" title="Fetch Urls from Sitemap">
+        <a id="fetchUrls" href="#sitemapPanel" title="Fetch Urls from Sitemap" data-toggle="tooltip">
             <img src="./images/sitemap.svg" />
         </a>
     </div>
@@ -31,7 +31,7 @@
     <div id="addLinkSection" class="w-100">
     </div>
     <button id="save" class="btn btn-info my-2 mr-3" type="submit">Save</button>
-    <button id="import" class="btn btn-info my-2" type="submit">Import</button>
+    <button id="import" class="btn btn-info my-2" type="submit" disabled>Import</button>
     <span class="pt-3 px-3 collapse" id="saveSuccessMessage">Saved Successfully!</span>
     <span class="pt-3 px-3 collapse" id="importConfigFailed">Unable to import configuration, please authenticate and try again</span>
     <span class="pt-3 px-3 d-none" id="importSuccessMessage">Imported Successfully!</span>
