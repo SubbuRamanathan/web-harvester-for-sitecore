@@ -1,5 +1,5 @@
 chrome.devtools.panels.create(
-    "Scrape & Migrate",
+    "Web Harvester",
     "/assets/images/icon48.png",
     "/devtools/devtools_scraper_panel.html"
 );

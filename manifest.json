@@ -1,8 +1,8 @@
 {
 	"manifest_version": 3,
 	"version": "1.0",
-	"name": "Sitecore - Scrape & Migrate",
-	"short_name": "Scrape & Migrate",
+	"name": "Web Harvester for Sitecore",
+	"short_name": "Web Harvester",
 	"description": "Tool to extract data from websites and import to Sitecore",
 	"permissions": ["activeTab", "tabs", "storage"],
 	"icons": {
@@ -15,7 +15,7 @@
 	},
 	"action": {
 		"default_popup": "options/options.html",
-		"default_title": "Sitecore - Scrape & Migrate (options)",
+		"default_title": "Web Harvester for Sitecore (options)",
 		"default_icon": "assets/images/icon38.png"
 	},
 	"devtools_page": "devtools/devtools_page.html",
