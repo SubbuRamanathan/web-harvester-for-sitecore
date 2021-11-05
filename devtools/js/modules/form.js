@@ -118,6 +118,20 @@ const initializeFormValidation = function(){
                         message: 'Enter valid Media Library Path (Eg: /sitecore/media library/Images)'
                     }
                 }
+            },
+            domSelector: {
+                validators: {
+                    notEmpty: {
+                        message: 'DOM Selection is required'
+                    }
+                }
+            },
+            fieldSelector: {
+                validators: {
+                    notEmpty: {
+                        message: 'Field Selection is required'
+                    }
+                }
             }
         }
     });

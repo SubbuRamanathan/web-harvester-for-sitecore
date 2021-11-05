@@ -6,21 +6,26 @@ import { getOrigin, getPageName, isRelativeUrl } from "./url.js";
 
 const mediaReplaceToken = '$uploadedMediaId'
 const composeCreateAPIRequest = function(url, document, mappingSection){
-    let itemName = getSanitizedPageName(url);
+    let itemPath = getItemPath(url, mappingSection.contentPath);
+    let itemName = getItemName(itemPath);
     let itemInfo = getBasicItemInfo(itemName, mappingSection);
     itemInfo = addFieldInfo(url, itemInfo, document, mappingSection);
-    let importDetails = { ParentPath: getParentPath(mappingSection), ItemPath: getItemPath(itemName, mappingSection), ItemInfo: itemInfo };
+    let importDetails = { ParentPath: getParentPath(itemPath), ItemPath: encodeURIComponent(itemPath), ItemInfo: itemInfo };
     return importDetails;
 }
 
-const getParentPath = function(mappingSection){
-    return mappingSection.contentPath.replace('$name', '');
+const getItemPath = function(url, contentPath){
+    return contentPath.replace('$name', getSanitizedPageName(url)).substring(1);
 }
 
-const getItemPath = function(itemName, mappingSection){
-    let itemPath = mappingSection.contentPath.replace('$name', itemName);
-    itemPath = itemPath.substring(1);
-    return encodeURIComponent(itemPath);
+const getItemName = function(itemPath){
+    return itemPath.split('/').pop();
+}
+
+const getParentPath = function(itemPath){
+    let ancestors = itemPath.split('/');
+    ancestors.pop();
+    return ancestors.join('/');
 }
 
 const getBasicItemInfo = function(itemName, mappingSection){

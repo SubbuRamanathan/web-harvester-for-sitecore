@@ -1,4 +1,4 @@
-export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeAddMappingSectionLink, validateAndAddMapping, addMapping, initializeDeleteOptions };
+export { initializeMappingEvents, populateMappingSection, addMappingSection, initializeAddMappingSectionLink, initializeMappingValidation, validateAndAddMapping, addMapping, initializeDeleteOptions };
 
 import { clearValidations, initializeFormValidation, reinitializeValidations } from "./form.js"
 import { closeAllPanels } from "./navigation.js";
@@ -13,6 +13,7 @@ const initializeMappingEvents = function(){
         validateAndAddMapping($(event.target).parents('.destination-group-map'));
         validateAndAddComplexFieldReplaceOptions($(event.target).parents('.destination-field-map'));
         addComplexFieldWarning($(event.target));
+        initializeMappingValidation($(event.target).parents('.destination-field-map'));
         closeAllPanels();
     });
 
@@ -85,22 +86,19 @@ const validateAndAddMapping = function(mappingSection){
 }
 
 const addMapping = function(mappingSection){
-    initializeMappingValidations(mappingSection, 'last');
-
     mappingSection.append(fetchHTML('./views/Mapping.html'));
-    initializeMappingValidations(mappingSection, 'first');
     var addedFieldSelector = mappingSection.find('.field-select:last');
     addedFieldSelector.html(mappingSection.find('.field-select:first').html());
     addedFieldSelector.val('');
     
     initializeDeleteOptions(mappingSection);
-    reinitializeValidations();
     $('[data-toggle="tooltip"]').tooltip();
 }
 
-const initializeMappingValidations = function(mappingSection, selector){
-    mappingSection.find(`.field-select:${selector}`).attr('name', 'fieldSelector');
-    mappingSection.find(`.dom-path:${selector}`).attr('name', 'domSelector');
+const initializeMappingValidation = function(fieldMap){
+    let enableValidation = !isBlankMapping(fieldMap);
+    fieldMap.find('.field-select').attr('name', enableValidation ? 'fieldSelector' : '');
+    fieldMap.find('.dom-path').attr('name', enableValidation ? 'domSelector' : '');
 }
 
 const initializeDeleteOptions = function(mappingSection){

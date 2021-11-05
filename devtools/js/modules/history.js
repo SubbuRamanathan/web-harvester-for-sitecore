@@ -21,8 +21,9 @@ const isHistoryTabSelected = function(){
 }
 
 const addHistoryEntries = function(imports){
-    for(let i = imports.length - 1; i >= 0; i--){
-        $('#history tbody').append(getEntryHTML(imports[i]));
+    if(imports){
+        for(let i = imports.length - 1; i >= 0; i--)
+            $('#history tbody').append(getEntryHTML(imports[i]));
     }
 }
 

@@ -8,7 +8,7 @@ import { reinitializeValidations } from "./form.js";
 const initializeTreeEvents = function(){    
     $('.sitecore-tree').on("select_node.jstree", function (event, selected) {
         var associatedPathSelector = $('.tree-icon.active').siblings('.path-selector');
-        if(associatedPathSelector.val().replace('/$name', '') != selected.node.data){
+        if(getCurrentAvailablePath(associatedPathSelector.val()) != selected.node.data){
             associatedPathSelector.val(`${selected.node.data}${associatedPathSelector.hasClass('target-selector') ? '/$name' : ''}`);
             associatedPathSelector.attr('data', selected.node.id);
             updateTemplateFields('.tree-icon.active', selected.node.id);
@@ -85,13 +85,21 @@ const expandTree = function(target){
         var treeContainerId = $(target).attr('href');
         var nodesToExpand = [];
         var currentItemPath = '/sitecore';
-        itemPath.split('/').forEach(function(itemName) {
-            if(itemName.trim() != '' && itemName.trim() != '$name' && itemName.toLowerCase() != 'sitecore'){
+
+        getCurrentAvailablePath(itemPath).split('/').forEach(function(itemName) {
+            if(itemName.trim() != '' && itemName.toLowerCase() != 'sitecore'){
                 currentItemPath += `/${itemName}`;
                 nodesToExpand.push(getItemId(currentItemPath));
             }
         });
         openNode(treeContainerId, nodesToExpand);
+    }
+}
+
+const getCurrentAvailablePath = function(itemPath){
+    if(itemPath){
+        let nameTokenIndex = itemPath.indexOf('/$name');
+        return nameTokenIndex != -1 ? itemPath.substring(0, nameTokenIndex) : itemPath;
     }
 }
 

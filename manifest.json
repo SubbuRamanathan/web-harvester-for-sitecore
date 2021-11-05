@@ -4,7 +4,7 @@
 	"name": "Sitecore - Scrape & Migrate",
 	"short_name": "Scrape & Migrate",
 	"description": "Tool to extract data from websites and import to Sitecore",
-	"permissions": ["activeTab", "tabs", "storage", "unlimitedStorage"],
+	"permissions": ["activeTab", "tabs", "storage"],
 	"icons": {
 		"16": "assets/images/icon16.png",
 		"48": "assets/images/icon48.png",

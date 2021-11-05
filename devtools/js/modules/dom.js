@@ -1,6 +1,6 @@
 import { reinitializeValidations } from "./form.js";
 import { sendRunTimeMessage } from "./message.js";
-import { validateAndAddMapping } from "./template.js";
+import { initializeMappingValidation, validateAndAddMapping } from "./template.js";
 
 export { initializeDomEvents }
 
@@ -49,7 +49,13 @@ const initializeDomEvents = function(){
         if(associatedDomPicker.length == 0) 
             associatedDomPicker = lastActiveDOMPicker;
         associatedDomPicker.removeClass('active').siblings('.dom-path').val(selectedXPaths);
+        initializeMappingValidation(associatedDomPicker.parents('.destination-field-map'));
         validateAndAddMapping(associatedDomPicker.parents('.destination-group-map'));
         reinitializeValidations();
     }
+    
+    $(document).on('focusout', '.dom-path', function (event) {
+        initializeMappingValidation($(event.currentTarget).parents('.destination-field-map'));
+        reinitializeValidations();
+    });
 }

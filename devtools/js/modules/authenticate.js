@@ -27,7 +27,7 @@ const updateAuthenticationStatus = function() {
 
 const checkAuthenticationStatus = function(){
     $('#authenticate').removeClass().addClass('checking');
-    if(isValidUrl(getSitecoreUrl())){
+    if(isValidUrl(getSitecoreUrl()) && !$('#authenticate').parents('.form-group').hasClass('has-error')){
         if(isAuthenticated()){
             $('#authenticate').removeClass('checking').addClass('success');
             populateMappingSection();

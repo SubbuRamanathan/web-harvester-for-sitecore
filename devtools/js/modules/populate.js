@@ -1,18 +1,23 @@
 export { populateImportForm }; 
 
-import { updateAuthenticationStatus } from "./authenticate.js";
+import { checkAuthenticationStatus } from "./authenticate.js";
 import { updateTemplateFields } from "./fields.js";
 import { clearValidations } from "./form.js";
 import { clearLogs } from "./log.js";
-import { addMapping, addMappingSection, initializeAddMappingSectionLink, initializeDeleteOptions, validateAndAddMapping } from "./template.js";
+import { addMapping, addMappingSection, initializeDeleteOptions } from "./template.js";
 
 const populateImportForm = function(importDetails){
     $('#sidepane1').trigger('click');
     clearValidations();
     $('#webpageUrls').val(importDetails.urlList);
     $('#sitecoreUrl').val(importDetails.sitecoreUrl);
-    populateMappingSections(importDetails.mappingSections);
-    updateAuthenticationStatus();
+    if(checkAuthenticationStatus())
+        populateMappingSections(importDetails.mappingSections);
+    else{
+        $('#mappingTemplateSection').addClass('d-none');
+        $("#importForm #importConfigFailed").show().delay(3200).fadeOut(300);
+    }
+
     clearLogs();
 }
 
