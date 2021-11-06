@@ -624,3 +624,10 @@ select:invalid {
 .log-warning{
   color: #ff9966;
 }
+
+.fetched-urls{
+  display: none;
+  position: absolute;
+  bottom: -15px;
+  font-size: 0.9em;
+}

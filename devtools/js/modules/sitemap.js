@@ -28,6 +28,8 @@ const initializeSitemapSubmitAction = function(){
                     }
                 });
                 $('#webpageUrls').val(matchingUrls.join(';'));
+                $('#fetchedUrlsCount').html(matchingUrls.length);
+                $('#fetchedUrlsCount').parent().show().delay(2400).fadeOut(300);
                 $('.close-icon').trigger('click');
             }
         });
