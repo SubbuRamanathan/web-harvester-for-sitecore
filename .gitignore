@@ -1,0 +1,4 @@
+*.zip
+module/.config/*
+module/.sitecore/*
+module/.vscode/*

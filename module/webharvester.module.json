@@ -1,0 +1,13 @@
+{
+  "namespace": "Sitecore.WebHarvester",
+  "items": {
+	"includes": [
+      {
+		"name": "system",
+		"path": "/sitecore/system/Modules/PowerShell/Script Library/Web Harvester for Sitecore",
+		"allowedPushOperations": "createUpdateAndDelete",
+		"scope": "itemAndDescendants"
+	  }
+	]
+  }
+}
