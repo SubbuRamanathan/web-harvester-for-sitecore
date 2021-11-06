@@ -49,7 +49,11 @@ const populateMappingSection = function(){
 }
 
 const appendMappingSection = function(){
+    let previousMappingItemPath = $('#mappingTemplateSection .target-selector:last').val();
     $('#mappingTemplateSection').append(fetchHTML('./views/MappingSection.html'));
+    let newMappingItemPath = $('#mappingTemplateSection .target-selector:last');
+    newMappingItemPath.val(previousMappingItemPath);
+    newMappingItemPath.focus();
     addMapping($('#mappingTemplateSection .destination-group-map:last'));
     reinitializeValidations();
 }

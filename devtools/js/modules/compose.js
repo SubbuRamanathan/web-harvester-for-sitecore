@@ -5,7 +5,8 @@ import { importMedia } from "./media.js";
 import { getSettings } from "./settings.js";
 import { getOrigin, getPageName, isRelativeUrl } from "./url.js";
 
-const mediaReplaceToken = '$uploadedMediaId'
+const mediaIdReplaceToken = '$uploadedMediaId'
+const mediaNameReplaceToken = '$uploadedMediaName'
 const composeCreateAPIRequest = function(url, document, mappingSection){
     let itemPath = getItemPath(url, mappingSection.contentPath);
     let itemName = getItemName(itemPath);
@@ -55,10 +56,12 @@ const addFieldInfo = function(url, itemInfo, document, mappingSection){
 }
 
 const getContent = function(url, document, mediaPath, xpathInfo, replaceOptions){
-    var contents = []; 
+    let contents = []; 
     xpathInfo.split(' || ').forEach(function(xpath){
-        var xpathContent = getXPathContent(url, document, xpath);
-        contents.push(processReplaceOptions(xpathContent, mediaPath, replaceOptions));
+        let xpathContent = getXPathContent(url, document, xpath);
+        let processedContent = processReplaceOptions(xpathContent, mediaPath, replaceOptions);
+        if(processedContent)
+            contents.push(processedContent);;
     });
     return contents.join('|');
 }
@@ -80,8 +83,10 @@ const processReplaceOptions = function(originalContent, mediaPath, replaceOption
             var findPattern = new RegExp(replaceOption.find);
             var replaceText = replaceOption.replace;
             processedContent = processedContent.replace(findPattern, replaceText);
-            if(processedContent.indexOf(mediaReplaceToken) != -1)
-                processedContent = processedContent.replace(mediaReplaceToken, importMedia(originalContent, mediaPath));
+            if(processedContent.indexOf(mediaIdReplaceToken) != -1){
+                processedContent = processedContent.replace(mediaIdReplaceToken, importMedia(originalContent, mediaPath));
+                processedContent = processedContent.replace(mediaNameReplaceToken, getPageName(originalContent));
+            }
         });
     }
     return processedContent;

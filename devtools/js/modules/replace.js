@@ -5,7 +5,7 @@ import { fetchHTML } from "./url.js";
 
 const linkFieldReplacePattern = '[{"find":"(.*)","replace":"<link linktype=\\"external\\" url=\\"$1\\" target=\\"_blank\\" />"}]';
 const linkFieldTypes = ['Internal Link', 'General Link', 'General Link with Search', 'link']
-const mediaFieldPattern = '[{"find":"(.*)","replace":"<image mediaid=\\"$uploadedMediaId\\" />"}]';
+const mediaFieldPattern = '[{"find":"(.*)","replace":"<image mediaid=\\"$uploadedMediaId\\" alt=\\"$uploadedMediaName\\" />"}]';
 const initializeReplaceMapping = function(target){
     clearReplaceMappingValidations();
     $('#replaceTextContainer').html('');

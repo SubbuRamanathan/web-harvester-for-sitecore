@@ -50,8 +50,13 @@ const fetchHTMLDocument = function(url) {
 }
 
 const getPageName = function(url){
-    var pathname = new URL(url).pathname;
-    return pathname == '/' ? 'Home' : pathname.split('/').pop();
+    try{
+        var pathname = new URL(url).pathname;
+        return pathname == '/' ? 'Home' : pathname.split('/').pop();
+    }
+    catch{
+        return '';
+    }
 }
 
 const isRelativeUrl = function(url){
