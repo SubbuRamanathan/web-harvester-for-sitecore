@@ -4,7 +4,7 @@
 	"name": "Web Harvester for Sitecore",
 	"short_name": "Web Harvester",
 	"description": "Tool to harvest and import any website's content into Sitecore",
-	"permissions": ["activeTab", "tabs", "storage"],
+	"permissions": ["tabs", "storage"],
 	"icons": {
 		"16": "assets/images/icon16.png",
 		"48": "assets/images/icon48.png",
