@@ -32,7 +32,6 @@ const isValid = function(){
 const initializeLogs = function(){
     clearLogs();
     $('#importForm').addClass('importing');
-    $('#importDetails').trigger('click');
 }
 
 const initializeImport = function() {

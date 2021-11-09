@@ -35,7 +35,7 @@ const initializeNavigationEvents = function(){
         $('#submitIssue').toggle();
         let sidebarWidth = $("#sidebar").width() > 50 ? 42 : 180;
         $("#sidebar").width(sidebarWidth);
-        $(".form-container").css({ left: sidebarWidth });
+        $(".form-container").css({ 'margin-left': sidebarWidth });
     });
 
     $('.close-icon').on('click', function () {
