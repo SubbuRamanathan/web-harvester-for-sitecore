@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"version": "1.0",
+	"version": "1.1",
 	"name": "Web Harvester for Sitecore",
 	"short_name": "Web Harvester",
 	"description": "Tool to harvest and import any website's content into Sitecore",
