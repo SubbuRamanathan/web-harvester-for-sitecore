@@ -5,9 +5,11 @@
 .marked-element-temp:not(img) {
     outline: 3px solid  #19a5a2;
     background-color: #d1fffe;
+    cursor: pointer;
 }
 img.marked-element-temp {
     border: 3px solid  #19a5a2;
+    cursor: pointer;
 }
 .marked-element,
 .marked-element-temp {
